@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { ExternalLink, Github, Calendar, Users, Code, X } from 'lucide-react';
 
+// Corrected image imports
+import Locust from '../../assets/images/LOCUST.png';
+import Jiji from '../../assets/images/JIJI_LETU.png';
+import Wemast from '../../assets/images/WEMAST.png';
+import Ramdss from '../../assets/images/RAMDSS.png';
+import Cogeos from '../../assets/images/COGEOS.jpg';
+import Flood from '../../assets/images/FLOODING.png';
+
 const Projects: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [filter, setFilter] = useState('all');
@@ -16,8 +24,8 @@ const Projects: React.FC = () => {
 
       Key innovations include automated alert systems, mobile-first design for field operatives, and integration with existing emergency infrastructure. The system has successfully improved emergency response coordination and enhanced communication between multiple agencies and first responders.`,
       technologies: ['Django', 'PostgreSQL', 'Redis', 'Leaflet', 'WebSocket', 'Docker', 'Python'],
-      imageUrl: 'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800',
-      client: 'LocateIT Kenya Limited',
+      imageUrl: Jiji,
+      client: 'Innovation',
       year: '2024',
       featured: true,
       category: 'emergency',
@@ -58,7 +66,8 @@ const Projects: React.FC = () => {
 
       The platform features multi-temporal layer comparison capabilities, QGIS plugin development for wetland assessment and monitoring, comprehensive tutorials and training materials, and extensive capacity building for stakeholders and end-users. The geoportal is accessible at http://gmes2-geoportal.sasscal.org/dashboard.`,
       technologies: ['QGIS Plugin Development', 'GeoServer', 'Web Development', 'Spatial Data Management', 'Training Materials', 'Capacity Building'],
-      imageUrl: 'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800',
+      imageUrl: Wemast,
+      site_url: 'http://gmes2-geoportal.sasscal.org/',
       client: 'SASSCAL',
       year: '2020-2023',
       featured: true,
@@ -79,7 +88,7 @@ const Projects: React.FC = () => {
 
       The analysis included phased assessment identifying flooded areas, correlation with agricultural production data, and directed assessment of counties with significant flood impacts. Comprehensive reports and mapographics were developed for stakeholder communication.`,
       technologies: ['GIS', 'Remote Sensing', 'Satellite Imagery', 'Hydrological Models', 'Spatial Analysis', 'Mapographics'],
-      imageUrl: 'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800',
+      imageUrl: Flood,
       client: 'MercyCorps AgriFin',
       year: '2024',
       featured: false,
@@ -100,7 +109,7 @@ const Projects: React.FC = () => {
 
       Key innovations include establishment of criteria to distinguish locust outbreak stages (breeding, hopper bands, and swarming) and validation using historical data and real-time observations. The system aims to mitigate socio-economic impacts caused by locust invasions across the Horn of Africa.`,
       technologies: ['Remote Sensing', 'Predictive Modeling', 'Satellite Imagery', 'Agro-meteorological Models', 'Machine Learning', 'GIS'],
-      imageUrl: 'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800',
+      imageUrl: Locust,
       client: 'ICPAC',
       year: '2025',
       featured: false,
@@ -121,7 +130,8 @@ const Projects: React.FC = () => {
 
       A QGIS plugin was developed as an integrated analysis tool providing analysis components for customary and professional users to support decision making. The project included comprehensive capacity building trainings and technical documentation for stakeholders and end-users.`,
       technologies: ['Machine Learning', 'Digital Image Processing', 'QGIS', 'Remote Sensing', 'Mathematical Algorithms', 'Web Platform'],
-      imageUrl: 'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800',
+      imageUrl: Cogeos,
+      site_url: 'http://coastalerosion.rcmrd.org/',
       client: 'GMES&AFRICA',
       year: '2024',
       featured: false,
@@ -142,7 +152,8 @@ const Projects: React.FC = () => {
 
       Key outputs include detailed rangeland maps highlighting vegetation states, water resources, and degraded areas. Impact maps assess rangeland degradation patterns to provide actionable insights for data-driven decision-making, sustainable resource management, and long-term rangeland regeneration.`,
       technologies: ['Remote Sensing', 'GIS', 'Satellite Imagery', 'Field Data Collection', 'Agro-meteorological Models', 'Spatial Analysis'],
-      imageUrl: 'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800',
+      imageUrl: Ramdss,
+      site_url: 'http://107.191.43.246:3001/',
       client: 'LocateIT Kenya Limited',
       year: '2024',
       featured: false,
@@ -189,7 +200,17 @@ const Projects: React.FC = () => {
               key={project.id}
               className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
-              <div className="h-48 bg-gradient-to-br from-blue-600 to-teal-600 relative overflow-hidden">
+              {/* Fixed: Added actual image display */}
+              <div className="h-48 relative overflow-hidden">
+                {project.imageUrl ? (
+                  <img 
+                    src={project.imageUrl} 
+                    alt={project.title} 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-gradient-to-br from-blue-600 to-teal-600 w-full h-full" />
+                )}
                 <div className="absolute inset-0 bg-black/20"></div>
                 <div className="absolute bottom-4 left-4 right-4">
                   <div className="flex items-center justify-between text-white">
@@ -231,9 +252,16 @@ const Projects: React.FC = () => {
                     View Details
                   </button>
                   <div className="flex space-x-2">
-                    <button className="p-2 text-gray-500 hover:text-blue-600 transition-colors">
-                      <ExternalLink size={20} />
-                    </button>
+                    {project.site_url && (
+                      <a
+                        href={project.site_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
+                      >
+                        <ExternalLink size={20} />
+                      </a>
+                    )}
                     <button className="p-2 text-gray-500 hover:text-blue-600 transition-colors">
                       <Github size={20} />
                     </button>
@@ -272,7 +300,17 @@ const Projects: React.FC = () => {
                 key={project.id}
                 className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
               >
-                <div className="h-32 bg-gradient-to-br from-gray-100 to-gray-200 relative">
+                {/* Fixed: Added actual image display */}
+                <div className="h-32 relative">
+                  {project.imageUrl ? (
+                    <img 
+                      src={project.imageUrl} 
+                      alt={project.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-full h-full" />
+                  )}
                   <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs text-gray-600">
                     {project.year}
                   </div>
@@ -318,7 +356,18 @@ const Projects: React.FC = () => {
                 </div>
 
                 <div className="mb-6">
-                  <div className="h-64 bg-gradient-to-br from-blue-600 to-teal-600 rounded-lg mb-4"></div>
+                  {/* Fixed: Added actual image display */}
+                  <div className="h-64 rounded-lg mb-4 overflow-hidden">
+                    {selectedProject.imageUrl ? (
+                      <img 
+                        src={selectedProject.imageUrl} 
+                        alt={selectedProject.title} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="bg-gradient-to-br from-blue-600 to-teal-600 w-full h-full" />
+                    )}
+                  </div>
                 </div>
 
                 <div className="prose prose-gray max-w-none mb-6">
@@ -358,10 +407,18 @@ const Projects: React.FC = () => {
                 </div>
 
                 <div className="flex space-x-4 pt-4 border-t">
-                  <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    <ExternalLink size={16} className="mr-2" />
-                    View Live
-                  </button>
+                  {/* Added live site URL functionality */}
+                  {selectedProject.site_url && (
+                    <a 
+                      href={selectedProject.site_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      <ExternalLink size={16} className="mr-2" />
+                      View Live
+                    </a>
+                  )}
                   <button className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
                     <Github size={16} className="mr-2" />
                     Source Code
