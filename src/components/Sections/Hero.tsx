@@ -1,5 +1,7 @@
 import React from 'react';
 import { ArrowDown, MapPin, Globe, Download } from 'lucide-react';
+// Import your professional image
+import ProfessionalImage from '../../assets/images/PROFFESSIONAL.jpg'; // Update with your actual image path
 
 const Hero: React.FC = () => {
   const scrollToNext = () => {
@@ -45,10 +47,13 @@ const Hero: React.FC = () => {
         <div className="text-center">
           <div className="mb-8">
             <div className="w-40 h-40 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-400 to-teal-400 p-1">
-              <div className="w-full h-full rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-600 to-teal-600 flex items-center justify-center">
-                  <span className="text-4xl font-bold text-white">BO</span>
-                </div>
+              <div className="w-full h-full rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center overflow-hidden border-2 border-white/20">
+                {/* Replaced "BO" with your professional image */}
+                <img 
+                  src={ProfessionalImage} 
+                  alt="Bonface Odhiambo" 
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
@@ -83,13 +88,15 @@ const Hero: React.FC = () => {
             >
               Get In Touch
             </button>
-            <button
-              onClick={() => window.open('https://linkedin.com/in/bonface-odhiambo-17245a1ab', '_blank')}
+            <a
+              href="https://linkedin.com/in/bonface-odhiambo-17245a1ab"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-8 py-3 bg-white/10 backdrop-blur-sm text-white rounded-lg font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 border border-white/20 flex items-center"
             >
               <Download size={20} className="mr-2" />
               View LinkedIn
-            </button>
+            </a>
           </div>
         </div>
       </div>

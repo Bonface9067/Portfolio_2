@@ -46,8 +46,7 @@ const About: React.FC = () => {
               </p>
               
               <p className="text-lg leading-relaxed text-justify">
-                Currently working as a Spatial Applications Research Expert at LocateIT Kenya Limited, I focus on 
-                developing methodologies for desert locust outbreak monitoring in collaboration with ICPAC. My 
+                Currently working as a Spatial Applications Research Expert at LocateIT Kenya Limited, my 
                 experience includes specialized work in flood impact analysis, coastal monitoring under the 
                 GMES&AFRICA programme, and rangeland degradation assessment.
               </p>
