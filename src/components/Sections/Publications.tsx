@@ -75,7 +75,7 @@ const Publications: React.FC = () => {
       venue: '4th Biennial International CEMEREM Conference, Sarova Whitesands Hotel, Mombasa, Kenya',
       theme: 'The Future of Mining and Natural Resources in Africa',
       abstract: 'Presentation focused on innovative approaches to biodiversity conservation through effective storytelling using GIS and remote sensing technologies, demonstrating practical applications in natural resource management.',
-      keywords: ['Biodiversity Conservation', 'GIS', 'Remote Sensing', 'Environmental Storytelling'],
+      keywords: ['Biodiversity Conservation', 'GIS Remote Sensing', 'Sustainable Mining', 'Environmental Storytelling'],
       WorkshopUrl: 'https://storymaps.arcgis.com/stories/cd4be5d84d404c07b963167cfda8a431',
     }
   ];
