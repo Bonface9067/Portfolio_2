@@ -180,7 +180,7 @@ const Contact: React.FC = () => {
                   </div>
                   <h4 className="text-xl font-semibold text-gray-900 mb-2">Message Sent!</h4>
                   <p className="text-gray-600">
-                    Thank you for reaching out. I'll get back to you within 24-48 hours.
+                    Thank you for reaching out. I'll get back to you within 12-48 hours.
                   </p>
                   <button
                     onClick={() => setIsSubmitted(false)}
