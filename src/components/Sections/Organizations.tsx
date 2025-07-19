@@ -91,11 +91,11 @@ const Organizations: React.FC = () => {
                 className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
               >
                 <div className="flex items-center mb-6">
-                  <div className="w-20 h-20 bg-white rounded-lg shadow-sm flex items-center justify-center mr-6">
+                  <div className="min-w-[80px] max-w-[120px] bg-white rounded-lg shadow-sm flex items-center justify-center mr-6 p-2">
                     <img
                       src={employer.logo}
                       alt={employer.name}
-                      className="w-16 h-16 object-contain"
+                      className="max-h-[64px] w-auto object-contain"
                     />
                   </div>
                   <div className="flex-1">
@@ -133,11 +133,11 @@ const Organizations: React.FC = () => {
                 className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
               >
                 <div className="text-center mb-4">
-                  <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <div className="min-w-[64px] max-w-[96px] bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-4 p-2">
                     <img
                       src={client.logo}
                       alt={client.name}
-                      className="w-12 h-12 object-contain"
+                      className="max-h-[48px] w-auto object-contain"
                     />
                   </div>
                   <h4 className="font-bold text-gray-900 mb-2">{client.name}</h4>

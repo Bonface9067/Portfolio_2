@@ -37,7 +37,7 @@ const Projects: React.FC = () => {
     },
     {
       id: 'agricultural-drought-monitoring',
-      title: 'Spatio-Temporal Agricultural Drought Monitoring System',
+      title: 'Spatio-Temporal Agricultural Drought Monitoring',
       description: 'Agricultural drought monitoring system for Athi-Galana-Sabaki River Basin',
       longDescription: `A comprehensive agricultural drought monitoring system developed for the Athi-Galana-Sabaki River Basin to track drought conditions over time and space. The system provides early warning capabilities to farmers and stakeholders, enabling timely interventions to mitigate drought impacts.
 
