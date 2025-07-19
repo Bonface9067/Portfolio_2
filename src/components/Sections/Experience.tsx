@@ -118,11 +118,11 @@ const Experience: React.FC = () => {
               <div className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center">
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4 overflow-hidden">
                       <img
                         src={job.logo}
                         alt={job.company}
-                        className="w-12 h-12 object-contain"
+                        className="max-w-full max-h-full object-contain p-1"
                       />
                     </div>
                     <div>

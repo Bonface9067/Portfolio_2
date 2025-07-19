@@ -101,49 +101,49 @@ const Publications: React.FC = () => {
         </div>
 
         {/* Filter Buttons */}
-        <div className="flex justify-center gap-4 mb-12">
+        <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 mb-8 sm:mb-12">
           <button
             onClick={() => setFilter('all')}
-            className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+            className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 ${
               filter === 'all'
                 ? 'bg-blue-600 text-white shadow-lg'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <Filter size={20} className="mr-2" />
+            <Filter size={18} className="mr-2" />
             All
           </button>
           <button
             onClick={() => setFilter('publication')}
-            className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+            className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 ${
               filter === 'publication'
                 ? 'bg-blue-600 text-white shadow-lg'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <BookOpen size={20} className="mr-2" />
+            <BookOpen size={18} className="mr-2" />
             Publications
           </button>
           <button
             onClick={() => setFilter('workshop')}
-            className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+            className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 ${
               filter === 'workshop'
                 ? 'bg-blue-600 text-white shadow-lg'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <Award size={20} className="mr-2" />
+            <Award size={18} className="mr-2" />
             Workshops
           </button>
           <button
             onClick={() => setFilter('presentation')}
-            className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+            className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 ${
               filter === 'presentation'
                 ? 'bg-blue-600 text-white shadow-lg'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            <Presentation size={20} className="mr-2" />
+            <Presentation size={18} className="mr-2" />
             Presentations
           </button>
         </div>
