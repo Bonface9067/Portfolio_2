@@ -97,7 +97,7 @@ const Skills: React.FC = () => {
                   <img
                     src={skill.logo}
                     alt={skill.name}
-                    className="w-8 h-8 object-contain"
+                    className="max-h-[48px] w-auto object-contain"
                   />
                 </div>
                 <div>
