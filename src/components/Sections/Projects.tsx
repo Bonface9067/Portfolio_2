@@ -18,11 +18,11 @@ const Projects: React.FC = () => {
       id: 'jiji-letu',
       title: 'JIJI LETU Emergency Response System',
       description: 'Real-time emergency response and crisis management platform',
-      longDescription: `JIJI LETU is a comprehensive emergency response system that revolutionizes how emergency services respond to crises. The system integrates real-time location tracking, automated dispatch, and comprehensive incident management to reduce response times and save lives.
+      longDescription: `JIJI LETU is a comprehensive emergency response system that revolutionizes how emergency services respond to crises. The system integrates real-time location tracking, automated dispatch, and comprehensive incident management to reduce response times and help save lives.
 
       The platform features advanced geospatial analysis capabilities, real-time communication tools, and predictive analytics to anticipate and prevent emergencies. Built with scalability in mind, it serves communities across multiple regions with efficient emergency coordination.
 
-      Key innovations include automated alert systems, mobile-first design for field operatives, and integration with existing emergency infrastructure. The system has successfully improved emergency response coordination and enhanced communication between multiple agencies and first responders.`,
+      Key innovations include automated alert systems, mobile-first design for field operatives, integration of an AI assistance to provide step by step FirstAID guidance to first responders and integration with existing emergency infrastructure..`,
       technologies: ['Django', 'PostgreSQL', 'Redis', 'Leaflet', 'WebSocket', 'Docker', 'Python'],
       imageUrl: Jiji,
       client: 'Innovation',
