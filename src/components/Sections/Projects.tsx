@@ -64,7 +64,7 @@ const Projects: React.FC = () => {
 
       The web service enhances user interactivity and information retrieval on wetland state and health. WeMAST geoportal provides easy access to Analysis Ready Spatial Data (ARSD) including Land Use Land Cover (LULC), vegetation cover data, water quality, water extent, and resilience indicators such as flood susceptibility areas.
 
-      The platform features multi-temporal layer comparison capabilities, QGIS plugin development for wetland assessment and monitoring, comprehensive tutorials and training materials, and extensive capacity building for stakeholders and end-users. The geoportal is accessible at http://gmes2-geoportal.sasscal.org/dashboard.`,
+      The platform features multi-temporal layer comparison capabilities, QGIS plugin development for wetland assessment and monitoring, comprehensive tutorials and training materials, and extensive capacity building for stakeholders and end-users.`,
       technologies: ['QGIS Plugin Development', 'GeoServer', 'Web Development', 'Spatial Data Management', 'Training Materials', 'Capacity Building'],
       imageUrl: Wemast,
       site_url: 'http://gmes2-geoportal.sasscal.org/',
