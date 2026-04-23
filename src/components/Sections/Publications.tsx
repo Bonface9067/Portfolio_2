@@ -1,327 +1,253 @@
 import React, { useState } from 'react';
-import { BookOpen, ExternalLink, Calendar, Award, Users, Filter, Presentation } from 'lucide-react';
+import KSAGroup from '../../assets/images/KSA_DATA_SHARING_FRAMEWORK_GROUP.jpg';
+import KSAMe from '../../assets/images/KSA_DATA_SHARING_FRAMEWORK_ME.jpg';
+import AIJudge from '../../assets/images/AI_FOR_CLIMATE_ACTION_JUDGE.jpg';
+import { useInView, container } from './_shared';
+
+type Item = {
+  id: string; type: 'publication' | 'workshop' | 'engagement' | 'presentation';
+  title: string; venue: string; date: string; desc: string;
+  authors?: string; participants?: string; keywords: string[];
+  url?: string; img?: string; imgSecondary?: string; color: string;
+};
+
+const items: Item[] = [
+  {
+    id: 'pub-drought', type: 'publication',
+    title: 'Spatio-Temporal Agricultural Drought Quantification in a Rainfed Agriculture, Athi-Galana-Sabaki River Basin',
+    venue: 'Journal of Geographic Information System, Vol. 16', date: '2024',
+    desc: 'Developed a comprehensive agricultural drought monitoring system using satellite imagery and agro-meteorological models, computing TCI, VCI, Precipitation Index and Agricultural Drought Index.',
+    authors: 'Tete J., Makokha G., Ngesa O., Muthami J., Odhiambo B.',
+    keywords: ['Agricultural Drought', 'Remote Sensing', 'Spatio-temporal Analysis', 'Early Warning'],
+    url: 'https://doi.org/10.4236/jgis.2024.164013', color: '#3b82f6',
+  },
+  {
+    id: 'ws-ksa-data', type: 'workshop',
+    title: 'Kenyan EO Data Sharing Framework Formulation Workshop',
+    venue: 'Kenya Space Agency · Nairobi', date: 'Feb 16–17, 2026',
+    desc: 'Co-developed the national Kenyan Earth Observation Data Sharing Framework — harmonising access, licensing, interoperability and archival of EO datasets across government agencies, academia and industry.',
+    participants: 'Kenya Space Agency, ministries, academia, private sector & development partners',
+    keywords: ['EO Data Policy', 'Interoperability', 'Kenya Space Agency', 'Data Governance'],
+    img: KSAGroup, imgSecondary: KSAMe, color: '#00b88f',
+  },
+  {
+    id: 'ws-ai-judge', type: 'engagement',
+    title: 'Judge — AI for Climate Action Innovation Challenge 2025',
+    venue: 'AI for Climate Action Innovation Challenge, Kenya', date: 'Dec 10, 2025',
+    desc: 'Evaluated finalist submissions on scientific rigour, climate-impact potential, scalability across African contexts, ethical AI practice and deployment readiness. Focused on Geo-AI, climate-risk modelling and EO integrations.',
+    participants: 'Finalist teams, climate-tech mentors & African AI researchers',
+    keywords: ['AI for Climate', 'Innovation Challenge', 'Geo-AI', 'Climate Resilience'],
+    img: AIJudge, color: '#f59e0b',
+  },
+  {
+    id: 'ws-space-bill', type: 'engagement',
+    title: 'Kenya Space Bill Stakeholder Review',
+    venue: 'Kenya Space Agency · Nairobi', date: 'Nov 2024',
+    desc: 'Representative of LocateIT Kenya for the review of the Kenya Space Bill, shaping future space policy and fostering innovation across industries reliant on space-based solutions.',
+    keywords: ['Space Policy', 'Kenya Space Bill', 'Earth Observation', 'Stakeholder Engagement'],
+    url: 'https://www.linkedin.com/posts/bonface-odhiambo-17245a1ab_locateit-kenyaspacebill-earthobservation-activity-7258516042174382081-J9mX',
+    color: '#a78bfa',
+  },
+  {
+    id: 'ws-locust-sc', type: 'presentation',
+    title: '6th Steering Committee Meeting — Desert Locust Management',
+    venue: 'Ole Sereni Hotel · Nairobi', date: 'Feb 2025',
+    desc: 'Presented progress on Locust Breeding Suitability predictive models and Vegetation-onset & locust-stay-duration predictive models across the Horn of Africa.',
+    keywords: ['Desert Locust', 'Predictive Modelling', 'ICPAC', 'Regional Collaboration'],
+    color: '#4ade80',
+  },
+  {
+    id: 'ws-rangeland', type: 'workshop',
+    title: 'Rangeland Monitoring & Management Training',
+    venue: 'Garissa University', date: 'Nov 18–19, 2024',
+    desc: 'Comprehensive training on practical applications of Earth observation data for rangeland monitoring, including satellite data processing and analysis tools for sustainable rangeland management.',
+    participants: 'Students and county officials',
+    keywords: ['Rangeland Management', 'Earth Observation', 'Capacity Building'],
+    color: '#00b88f',
+  },
+  {
+    id: 'ws-coastal', type: 'workshop',
+    title: 'End User Workshop — Coastal Geomorphological Mapping',
+    venue: 'LocateIT · Nairobi', date: 'Feb 7–9, 2024',
+    desc: 'Training on coastal monitoring tools covering shoreline extraction, trend analysis, and coastal change assessment using remote sensing and GIS techniques.',
+    keywords: ['Coastal Monitoring', 'Shoreline Analysis', 'Capacity Building'],
+    color: '#34d399',
+  },
+  {
+    id: 'ws-biodiversity', type: 'presentation',
+    title: 'Storytelling for Biodiversity Conservation using GIS/RS',
+    venue: '4th Biennial CEMEREM Conference · Mombasa', date: 'Oct 5–6, 2023',
+    desc: 'Oral presentation on innovative approaches to biodiversity conservation through GIS and remote sensing-powered storytelling, with practical applications in natural resource management.',
+    keywords: ['Biodiversity Conservation', 'GIS Remote Sensing', 'Storytelling', 'Sustainable Mining'],
+    url: 'https://storymaps.arcgis.com/stories/cd4be5d84d404c07b963167cfda8a431', color: '#f59e0b',
+  },
+];
+
+const typeMap: Record<Item['type'], string> = {
+  publication: '📖 Publication', workshop: '🛠 Workshop',
+  engagement: '⚡ Engagement', presentation: '🎤 Presentation',
+};
+const filters = [
+  { id: 'all', label: 'All' },
+  { id: 'publication', label: 'Publications' },
+  { id: 'workshop', label: 'Workshops' },
+  { id: 'engagement', label: 'Engagements' },
+  { id: 'presentation', label: 'Presentations' },
+];
 
 const Publications: React.FC = () => {
+  const { ref, inView } = useInView<HTMLDivElement>(0.08);
   const [filter, setFilter] = useState('all');
-
-  const publications = [
-    {
-      id: 'agricultural-drought-2024',
-      title: 'Spatio-Temporal Agricultural Drought Quantification in a Rainfed Agriculture, Athi-Galana-Sabaki River Basin',
-      type: 'publication',
-      description: 'Research on developing a spatio-temporal agricultural drought monitoring system for the Athi-Galana basin to track drought conditions and provide early warning systems.',
-      date: '2024',
-      venue: 'Journal of Geographic Information System, Volume 16',
-      url: 'https://doi.org/10.4236/jgis.2024.164013',
-      authors: ['Tete, J.', 'Makokha, G.', 'Ngesa, O.', 'Muthami, J.', 'Odhiambo, B.'],
-      abstract: 'This study developed a comprehensive agricultural drought monitoring system using satellite imagery and agro-meteorological models. The research focused on creating index computation algorithms including Temperature Condition Index, Vegetation Condition Index, Precipitation Index, and Agricultural Drought Index for the Athi-Galana-Sabaki River Basin.',
-      keywords: ['Agricultural Drought', 'Remote Sensing', 'Spatio-temporal Analysis', 'Early Warning Systems']
-    }
-  ];
-
-  const workshops = [
-    {
-      id: 'kenya-space-bill-2024',
-      title: 'Kenya Space Bill Review - Stakeholder Engagement',
-      type: 'workshop',
-      description: 'Representative of LocateIT_KE for the review of the Kenya Space Bill, shaping the future of space policy in Kenya.',
-      date: 'November 2024',
-      venue: 'Kenya Space Agency, Nairobi',
-      participants: 'Industry stakeholders and space sector professionals',
-      abstract: 'Participated in critical review session for the draft Kenya Space Bill hosted by the Kenya Space Agency. The engagement focused on empowering stakeholders in the space sector and fostering innovation, collaboration, and growth across industries reliant on space-based solutions. The Bill\'s provisions support space activities and address unique needs of Kenya\'s growing space industry.',
-      keywords: ['Space Policy', 'Kenya Space Bill', 'Earth Observation', 'Industry Stakeholder Engagement'],
-      linkedinUrl: 'https://www.linkedin.com/posts/bonface-odhiambo-17245a1ab_locateit-kenyaspacebill-earthobservation-activity-7258516042174382081-J9mX'
-    },
-    {
-      id: 'rangeland-training-2024',
-      title: 'Rangeland Monitoring and Management Training',
-      type: 'workshop',
-      description: 'Training workshop on manipulation of Earth observation datasets for rangelands monitoring and management.',
-      date: 'November 18-19, 2024',
-      venue: 'Garissa University',
-      participants: 'Students and county officials',
-      abstract: 'Comprehensive training program covering practical applications of Earth observation data for rangeland monitoring, including hands-on sessions with satellite data processing and analysis tools for sustainable rangeland management.',
-      keywords: ['Rangeland Management', 'Earth Observation', 'Capacity Building', 'Training'],
-      linkedinUrl: 'https://www.linkedin.com/posts/bonface-odhiambo-17245a1ab_gis-earthobservation-sustainability-activity-7265422971874254849-1Kgg'
-    },
-    {
-      id: 'desert-locust-steering-committee-2024',
-      title: 'The 6th Steering Committee Meeting for Inter-regional Platform for the Sustainable Management of Desert Locusts',
-      type: 'presentation',
-      description: 'Presented progress on desert locust predictive models development as LocateIT representative in ICPAC consultancy.',
-      date: 'February 2025',
-      venue: 'Ole Sereni Hotel, Nairobi, Kenya',
-      participants: 'Regional stakeholders and pest management experts',
-      abstract: 'Presented progress on development of Locust breeding Suitability predictive models for predicting desert locust breeding suitability along the horn of Africa, and Vegetation onset and desert locust stay duration predictive model. The meeting focused on strengthening regional collaboration, improving data collection & analysis, integrating technologies like drones & AI, and enhancing preparedness & response capabilities for transboundary pest management.',
-      keywords: ['Desert Locust', 'Predictive Modeling', 'Regional Collaboration', 'Pest Management']
-    },
-    {
-      id: 'coastal-training-2024',
-      title: 'End User Workshop Training on Coastal Geomorphological Mapping and Shoreline Change Analysis',
-      type: 'workshop',
-      description: 'Training workshop on coastal monitoring tools and methodologies for stakeholders and end-users.',
-      date: 'February 7-9, 2024',
-      venue: 'LocateIT, Nairobi, Kenya',
-      participants: 'Coastal monitoring stakeholders',
-      abstract: 'Intensive workshop covering the use of developed coastal monitoring tools and products, including methodologies for shoreline extraction, trend analysis, and coastal change assessment using remote sensing and GIS techniques.',
-      keywords: ['Coastal Monitoring', 'Shoreline Analysis', 'Training', 'Stakeholder Engagement']
-    },
-    {
-      id: 'biodiversity-presentation-2023',
-      title: 'Storytelling for Biodiversity Conservation using GIS/Remote Sensing Technology',
-      type: 'presentation',
-      description: 'Oral presentation on leveraging geospatial technologies for biodiversity conservation storytelling.',
-      date: 'October 5-6, 2023',
-      venue: '4th Biennial International CEMEREM Conference, Sarova Whitesands Hotel, Mombasa, Kenya',
-      theme: 'The Future of Mining and Natural Resources in Africa',
-      abstract: 'Presentation focused on innovative approaches to biodiversity conservation through effective storytelling using GIS and remote sensing technologies, demonstrating practical applications in natural resource management.',
-      keywords: ['Biodiversity Conservation', 'GIS Remote Sensing', 'Sustainable Mining', 'Environmental Storytelling'],
-      WorkshopUrl: 'https://storymaps.arcgis.com/stories/cd4be5d84d404c07b963167cfda8a431',
-    }
-  ];
-
-  const allItems = [
-    ...publications.map(item => ({ ...item, category: 'publication' })),
-    ...workshops.map(item => ({ ...item, category: 'workshop' }))
-  ];
-
-  const filteredItems = filter === 'all' 
-    ? allItems 
-    : allItems.filter(item => item.type === filter);
+  const shown = filter === 'all' ? items : items.filter((i) => i.type === filter);
 
   return (
-    <section id="publications" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Publications & Workshops</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Contributing to the advancement of geospatial science through research publications, 
-            conference presentations, and knowledge sharing workshops.
-          </p>
-        </div>
+    <section id="publications" style={{
+      padding: '96px 0', background: 'var(--bg-primary)', position: 'relative', overflow: 'hidden',
+    }}>
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, opacity: 0.4, pointerEvents: 'none',
+        backgroundImage:
+          'linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px)',
+        backgroundSize: '64px 64px',
+      }} />
 
-        {/* Filter Buttons */}
-        <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4 mb-8 sm:mb-12">
-          <button
-            onClick={() => setFilter('all')}
-            className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 ${
-              filter === 'all'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            <Filter size={18} className="mr-2" />
-            All
-          </button>
-          <button
-            onClick={() => setFilter('publication')}
-            className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 ${
-              filter === 'publication'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            <BookOpen size={18} className="mr-2" />
-            Publications
-          </button>
-          <button
-            onClick={() => setFilter('workshop')}
-            className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 ${
-              filter === 'workshop'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            <Award size={18} className="mr-2" />
-            Workshops
-          </button>
-          <button
-            onClick={() => setFilter('presentation')}
-            className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 ${
-              filter === 'presentation'
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            <Presentation size={18} className="mr-2" />
-            Presentations
-          </button>
-        </div>
-
-        {/* Publications and Workshops Grid */}
-        <div className="space-y-8">
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-            >
-              <div className="p-8">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center">
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center mr-4 ${
-                      item.type === 'publication' ? 'bg-blue-100' : 
-                      item.type === 'workshop' ? 'bg-teal-100' : 'bg-orange-100'
-                    }`}>
-                      {item.type === 'publication' ? (
-                        <BookOpen size={24} className="text-blue-600" />
-                      ) : item.type === 'workshop' ? (
-                        <Award size={24} className="text-teal-600" />
-                      ) : (
-                        <Presentation size={24} className="text-orange-600" />
-                      )}
-                    </div>
-                    <div>
-                      <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                        item.type === 'publication' 
-                          ? 'bg-blue-100 text-blue-800' 
-                          : item.type === 'workshop'
-                          ? 'bg-teal-100 text-teal-800'
-                          : 'bg-orange-100 text-orange-800'
-                      }`}>
-                        {item.type === 'publication' ? 'Journal Paper' : 
-                         item.type === 'workshop' ? 'Workshop' : 'Conference Presentation'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center text-gray-500">
-                    <Calendar size={16} className="mr-1" />
-                    <span>{item.date}</span>
-                  </div>
-                </div>
-
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  {item.title}
-                </h3>
-
-                <p className="text-gray-600 mb-4 leading-relaxed">
-                  {item.description}
-                </p>
-
-                <div className="mb-4">
-                  <p className="text-sm font-semibold text-gray-700 mb-1">
-                    {item.type === 'publication' ? 'Published in:' : 
-                     item.type === 'workshop' ? 'Venue:' : 'Presented at:'}
-                  </p>
-                  <p className="text-blue-600 font-medium">{item.venue}</p>
-                </div>
-
-                {item.authors && (
-                  <div className="mb-4">
-                    <p className="text-sm font-semibold text-gray-700 mb-1">Authors:</p>
-                    <div className="flex items-center">
-                      <Users size={16} className="text-gray-400 mr-2" />
-                      <span className="text-gray-600">{item.authors.join(', ')}</span>
-                    </div>
-                  </div>
-                )}
-
-                {item.participants && (
-                  <div className="mb-4">
-                    <p className="text-sm font-semibold text-gray-700 mb-1">Participants:</p>
-                    <div className="flex items-center">
-                      <Users size={16} className="text-gray-400 mr-2" />
-                      <span className="text-gray-600">{item.participants}</span>
-                    </div>
-                  </div>
-                )}
-
-                <div className="mb-6">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">Abstract:</p>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    {item.abstract}
-                  </p>
-                </div>
-
-                <div className="mb-6">
-                  <p className="text-sm font-semibold text-gray-700 mb-2">Keywords:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {item.keywords.map((keyword, index) => (
-                      <span
-                        key={index}
-                        className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
-                      >
-                        {keyword}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  {item.url ? (
-                    <button
-                      onClick={() => window.open(item.url, '_blank')}
-                      className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold"
-                    >
-                      <ExternalLink size={16} className="mr-2" />
-                      View Publication
-                    </button>
-                  ) : item.linkedinUrl ? (
-                    <button
-                      onClick={() => window.open(item.linkedinUrl, '_blank')}
-                      className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold"
-                    >
-                      <ExternalLink size={16} className="mr-2" />
-                      View LinkedIn Post
-                    </button>
-                  ) : item.WorkshopUrl ? (
-                    <button
-                      onClick={() => window.open(item.WorkshopUrl, '_blank')}
-                      className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold"
-                    >
-                      <ExternalLink size={16} className="mr-2" />
-                      View Presentation
-                    </button>
-                  ) : (
-                    <div className="flex items-center px-6 py-2 bg-gray-100 text-gray-500 rounded-lg">
-                      <Award size={16} className="mr-2" />
-                      Workshop/Presentation
-                    </div>
-                  )}
-                  <div className="text-sm text-gray-500">
-                    {item.type === 'publication' ? 'Peer-reviewed' : 'Professional training'}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Research Focus Areas */}
-        <div className="mt-16 bg-white rounded-xl p-8 shadow-md">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            Research & Training Focus Areas
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <BookOpen size={32} className="text-blue-600" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Agricultural Monitoring</h4>
-              <p className="text-gray-600 text-sm">
-                Drought quantification, crop monitoring, and agricultural resilience systems
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Award size={32} className="text-teal-600" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Coastal Dynamics</h4>
-              <p className="text-gray-600 text-sm">
-                Shoreline change analysis, coastal erosion monitoring, and geomorphological mapping
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users size={32} className="text-orange-600" />
-              </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Capacity Building</h4>
-              <p className="text-gray-600 text-sm">
-                Training workshops on Earth observation, GIS applications, and rangeland management
-              </p>
-            </div>
+      <div ref={ref} style={{
+        ...container,
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateY(0)' : 'translateY(32px)',
+        transition: 'opacity 0.8s ease, transform 0.8s ease',
+        position: 'relative',
+      }}>
+        <div style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
+          marginBottom: 52, gap: 24, flexWrap: 'wrap',
+        }}>
+          <div>
+            <div style={{
+              fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase',
+              color: 'var(--accent)', marginBottom: 12, fontWeight: 600,
+            }}>Research · Speaking · Policy</div>
+            <h2 style={{
+              fontFamily: "'Syne',sans-serif", fontWeight: 800,
+              fontSize: 'clamp(30px,3.8vw,50px)', lineHeight: 1.08,
+              letterSpacing: '-0.025em', color: 'var(--text-primary)', margin: 0,
+            }}>
+              Publications{' '}
+              <span style={{
+                background: 'linear-gradient(90deg, var(--accent), #a78bfa)',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              }}>&amp; Engagements</span>
+            </h2>
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {filters.map((f) => (
+              <button key={f.id} onClick={() => setFilter(f.id)} style={{
+                padding: '7px 16px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+                cursor: 'pointer', transition: 'all 0.2s',
+                background: filter === f.id ? 'var(--accent)' : 'var(--card-bg)',
+                color: filter === f.id ? '#030812' : 'var(--text-secondary)',
+                border: filter === f.id ? '1px solid transparent' : '1px solid var(--border-soft)',
+              }}>{f.label}</button>
+            ))}
           </div>
         </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {shown.map((item, i) => (
+            <article key={item.id} style={{
+              background: 'var(--card-bg)', border: '1px solid var(--border-soft)',
+              borderRadius: 18, overflow: 'hidden', display: 'grid',
+              gridTemplateColumns: item.img ? '260px 1fr' : '1fr',
+              transition: 'border-color 0.3s, transform 0.3s',
+              opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(16px)',
+              transitionDelay: `${i * 0.06}s`,
+            }}
+              className={item.img ? 'pub-card' : ''}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = `${item.color}55`;
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-soft)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}>
+
+              {item.img && (
+                <div style={{ overflow: 'hidden', position: 'relative', minHeight: 180 }}>
+                  <img src={item.img} alt=""
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }} />
+                  {item.imgSecondary && (
+                    <img src={item.imgSecondary} alt="" style={{
+                      position: 'absolute', bottom: 8, right: 8,
+                      width: 64, height: 64, objectFit: 'cover', borderRadius: 8,
+                      border: '2px solid rgba(5,8,18,0.9)',
+                    }} />
+                  )}
+                </div>
+              )}
+
+              <div style={{ padding: '24px 28px' }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  marginBottom: 14, flexWrap: 'wrap', gap: 8,
+                }}>
+                  <span style={{
+                    fontSize: 11, padding: '4px 12px', borderRadius: 20,
+                    background: `${item.color}18`, color: item.color,
+                    border: `1px solid ${item.color}44`, letterSpacing: '0.06em',
+                  }}>{typeMap[item.type]}</span>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>📅 {item.date}</span>
+                </div>
+
+                <h3 style={{
+                  fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 17,
+                  color: 'var(--text-primary)', marginBottom: 6, lineHeight: 1.3,
+                }}>{item.title}</h3>
+                <div style={{ fontSize: 12, color: item.color, fontWeight: 600, marginBottom: 12 }}>
+                  {item.venue}
+                </div>
+                {item.authors && (
+                  <div style={{
+                    fontSize: 12, color: 'var(--text-muted)', marginBottom: 10, fontStyle: 'italic',
+                  }}>{item.authors}</div>
+                )}
+                {item.participants && (
+                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 10 }}>
+                    👥 {item.participants}
+                  </div>
+                )}
+                <p style={{
+                  fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 14,
+                }}>{item.desc}</p>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+                  {item.keywords.map((k) => (
+                    <span key={k} style={{
+                      fontSize: 10, padding: '3px 9px', borderRadius: 20,
+                      background: 'var(--card-bg-hover)', color: 'var(--text-muted)',
+                      border: '1px solid var(--border-soft)',
+                    }}>{k}</span>
+                  ))}
+                </div>
+
+                {item.url && (
+                  <a href={item.url} target="_blank" rel="noopener noreferrer" style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 12,
+                    color: item.color, fontWeight: 700, textDecoration: 'none',
+                    padding: '8px 18px', borderRadius: 6,
+                    background: `${item.color}18`, border: `1px solid ${item.color}44`,
+                  }}>↗ {item.type === 'publication' ? 'View Publication' : 'View Post'}</a>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
+      <style>{`
+        @media (max-width: 780px) {
+          .pub-card { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 };

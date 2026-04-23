@@ -1,188 +1,197 @@
 import React, { useState } from 'react';
-import { MapPin, Calendar, ExternalLink, ChevronDown, ChevronRight } from 'lucide-react';
 import LocateLogo from '../../assets/images/LocateIT.jpg';
 import EsriLogo from '../../assets/images/ESRI_2.png';
 import TTULogo from '../../assets/images/Taita-Taveta-University.webp';
+import { useInView, sectionPad, container } from './_shared';
+
+type Job = {
+  id: string; logo: string; company: string; role: string;
+  period: string; location: string; desc: string; bullets: string[]; color: string;
+};
+
+const jobs: Job[] = [
+  {
+    id: 'locateit-now', logo: LocateLogo,
+    company: 'LocateIT Kenya Limited', role: 'Spatial Applications Research Expert',
+    period: 'Jan 2025 – Present', location: 'Nairobi, Kenya',
+    desc: 'Leading methodology development for desert locust outbreak prediction in collaboration with ICPAC across the Horn of Africa.',
+    bullets: [
+      'Technical proposal formulation and project inception reporting',
+      'Integration of historical records, real-time field observations and satellite imagery',
+      'Development of Locust Breeding Suitability predictive models for the Horn of Africa',
+      'Development of Vegetation Onset & desert locust stay-duration predictive models',
+      'Validation of outbreak stage criteria: breeding → hopper bands → swarming',
+    ],
+    color: '#00b88f',
+  },
+  {
+    id: 'locateit-2024', logo: LocateLogo,
+    company: 'LocateIT Kenya Limited', role: 'GIS / Remote Sensing Analyst',
+    period: 'Jan 2024 – Dec 2024', location: 'Nairobi, Kenya',
+    desc: 'Geospatial analysis across flooding impact, rangeland degradation, and coastal monitoring projects.',
+    bullets: [
+      'Collected, processed and analysed satellite imagery and field survey data',
+      'Developed detailed flood maps and rangeland degradation assessments',
+      'Integrated geospatial data into decision support systems',
+      'Facilitated capacity-building workshops for county and national stakeholders',
+    ],
+    color: '#00b88f',
+  },
+  {
+    id: 'ttu-2023', logo: TTULogo,
+    company: 'Taita Taveta University', role: 'GIS / Remote Sensing Consultant',
+    period: 'Apr 2023 – Aug 2023', location: 'Taita Taveta, Kenya',
+    desc: 'Developed a spatio-temporal agricultural drought monitoring system for the Athi-Galana-Sabaki River Basin.',
+    bullets: [
+      'Curated satellite imagery for agricultural drought analysis',
+      'Computed TCI, VCI, Precipitation Index and Agricultural Drought Index',
+      'Built integrated drought monitoring system in Django + Python',
+      'Developed QGIS plugin for professional users and stakeholders',
+    ],
+    color: '#a78bfa',
+  },
+  {
+    id: 'esri-2022', logo: EsriLogo,
+    company: 'ESRI Eastern Africa', role: 'Technical Intern',
+    period: 'Apr 2022 – Jul 2022', location: 'Nairobi, Kenya',
+    desc: 'Developed GIS solutions for education and sporting sector management under Kenya\'s Competency-Based Curriculum.',
+    bullets: [
+      'Intelligence-based tools for student placement prediction',
+      'Web apps and web maps utilising Earth observation data',
+      'Suitability analysis for senior secondary school channel adoption',
+      'Data collection apps for school registration and sporting facility monitoring',
+    ],
+    color: '#f59e0b',
+  },
+];
 
 const Experience: React.FC = () => {
-  const [expandedJob, setExpandedJob] = useState<string | null>(null);
-
-  const workExperience = [
-    {
-      id: 'locateit-current',
-      company: 'LocateIT Kenya Limited',
-      position: 'Spatial Applications Research Expert',
-      duration: 'January 2025 - Present',
-      location: 'Nairobi, Kenya',
-      logo: LocateLogo,
-      companyUrl: 'https://locateit.co.ke',
-      description: 'Developing methodologies and validation criteria for establishing different states of desert locust outbreaks in collaboration with ICPAC.',
-      achievements: [
-        'Technical proposal formulation and project inception reporting',
-        'Integration of historical records, real-time field observations, and satellite imagery',
-        'Development of Locust breeding Suitability predictive models for predicting desert locust breeding suitability along the horn of Africa',
-        'Development of Vegetation onset and desert locust stay duration predictive model',
-        'Development and validation of predictive models for locust outbreak patterns',
-        'Establishment of criteria to distinguish locust outbreak stages (breeding, hopper bands, swarming)'
-      ]
-    },
-    {
-      id: 'locateit',
-      company: 'LocateIT Kenya Limited',
-      position: 'GIS/Remote Sensing Analyst',
-      duration: 'January 2024 - December 2024',
-      location: 'Nairobi, Kenya',
-      logo: LocateLogo,
-      companyUrl: 'https://locateit.co.ke',
-      description: 'Specialized in leveraging geospatial technologies to address complex environmental and socio-economic challenges.',
-      achievements: [
-        'Collected, processed, and analyzed spatial data from satellite imagery and field surveys',
-        'Developed detailed maps and impact assessments for flood and rangeland monitoring',
-        'Provided technical support in integrating geospatial data into decision support systems',
-        'Facilitated capacity-building workshops for stakeholders and prepared comprehensive project reports'
-      ]
-    },
-    {
-      id: 'ttu-consultant',
-      company: 'Taita Taveta University',
-      position: 'GIS/Remote Sensing Consultant',
-      duration: 'April 2023 - August 2023',
-      location: 'Taita Taveta, Kenya',
-      logo: TTULogo,
-      companyUrl: 'https://www.ttu.ac.ke',
-      description: 'Developed a spatio-temporal agricultural drought monitoring system for the Athi-Galana-Sabaki River Basin.',
-      achievements: [
-        'Data curation of satellite imagery for agricultural drought analysis',
-        'Development of index computation algorithms (Temperature Condition Index, Vegetation Condition Index, Precipitation Index, Agricultural Drought Index)',
-        'Normalization and classification of agricultural drought findings',
-        'Development of integrated agricultural drought monitoring system using Django framework and Python',
-        'Validation of spatio-temporal agricultural drought index statistical outputs',
-        'Development of QGIS plugin for professional users and stakeholders'
-      ]
-    },
-    {
-      id: 'esri',
-      company: 'ESRI Eastern Africa',
-      position: 'Technical Intern',
-      duration: 'April 2022 - July 2022',
-      location: 'Nairobi, Kenya',
-      logo: EsriLogo,
-      companyUrl: 'https://www.esriea.com/',
-      description: 'Developed GIS solutions for education and sporting sector management in the Competency-Based Curriculum system.',
-      achievements: [
-        'Developed intelligence-based tools for student placement prediction',
-        'Created web apps and web maps utilizing earth observation data',
-        'Conducted suitability analysis on schools for senior secondary school channel adoption',
-        'Created data collection apps for school registration and sporting facility monitoring'
-      ]
-    }
-  ];
-
-  const consultancyProjects = [
-    {
-      title: 'Coastal Geomorphological Mapping - GMES&AFRICA Programme',
-      duration: 'September 2023 - February 2024',
-      description: 'Developed tools and platform for monitoring coastal changes in eastern Africa Indian Ocean Island countries under LocateIT implementation.'
-    },
-    {
-      title: 'Geospatial Analysis of Flooding Impacts - MercyCorps AgriFin', 
-      duration: 'August 2024 - September 2024',
-      description: 'Assessed flooding impacts on agriculture and infrastructure in Kenya to support financial inclusion for smallholder farmers.'
-    },
-    {
-      title: 'Rangeland Management and Monitoring Tools',
-      duration: 'November 2024 - Present',
-      description: 'Assessing rangeland degradation in Wajir and Garissa counties to improve management and support pastoralist livelihoods.'
-    }
-  ];
-
-  const toggleExpanded = (id: string) => {
-    setExpandedJob(expandedJob === id ? null : id);
-  };
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const [open, setOpen] = useState<string | null>('locateit-now');
 
   return (
-    <section id="experience" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Work Experience</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            2+ years of experience in geospatial analysis, remote sensing, and Earth observation 
-            applications across diverse environmental and agricultural projects.
-          </p>
+    <section id="experience" style={{ ...sectionPad, background: 'var(--bg-primary)' }}>
+      <div ref={ref} style={{
+        ...container,
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateY(0)' : 'translateY(32px)',
+        transition: 'opacity 0.8s ease, transform 0.8s ease',
+      }}>
+        <div style={{ marginBottom: 56 }}>
+          <div style={{
+            fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase',
+            color: 'var(--accent)', fontWeight: 600, marginBottom: 12,
+          }}>Career</div>
+          <h2 style={{
+            fontFamily: "'Syne',sans-serif", fontWeight: 800,
+            fontSize: 'clamp(32px,4vw,52px)', lineHeight: 1.08,
+            letterSpacing: '-0.025em', color: 'var(--text-primary)', margin: 0,
+          }}>
+            Work{' '}
+            <span style={{
+              background: 'linear-gradient(90deg, var(--accent), #a78bfa)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            }}>Experience</span>
+          </h2>
         </div>
 
-        {/* Work Experience */}
-        <div className="space-y-8 mb-16">
-          {workExperience.map((job) => (
-            <div key={job.id} className="bg-white rounded-xl shadow-md overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center">
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mr-4 overflow-hidden">
-                      <img
-                        src={job.logo}
-                        alt={job.company}
-                        className="max-w-full max-h-full object-contain p-1"
-                      />
+        <div style={{ position: 'relative' }}>
+          <div style={{
+            position: 'absolute', left: 28, top: 0, bottom: 0, width: 1,
+            background: 'linear-gradient(to bottom, var(--accent-border), transparent)',
+          }} />
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {jobs.map((j, idx) => {
+              const isOpen = open === j.id;
+              return (
+                <div key={j.id} style={{
+                  position: 'relative', marginLeft: 64,
+                  background: 'var(--card-bg)', border: '1px solid var(--border-soft)',
+                  borderRadius: 16, overflow: 'hidden',
+                  transition: 'border-color 0.3s',
+                  opacity: inView ? 1 : 0,
+                  transform: inView ? 'translateX(0)' : 'translateX(-20px)',
+                  transitionDelay: `${idx * 0.12}s`,
+                }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = `${j.color}55`)}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-soft)')}>
+
+                  <div style={{
+                    position: 'absolute', left: -42, top: 28, width: 13, height: 13,
+                    borderRadius: '50%', background: j.color,
+                    border: '2px solid var(--bg-primary)',
+                    boxShadow: `0 0 10px ${j.color}80`,
+                  }} />
+
+                  <div style={{
+                    padding: '22px 24px', cursor: 'pointer', display: 'flex',
+                    alignItems: 'center', gap: 18,
+                  }} onClick={() => setOpen(isOpen ? null : j.id)}>
+                    <div style={{
+                      width: 52, height: 52, borderRadius: 10, overflow: 'hidden',
+                      background: 'var(--card-bg-hover)', flexShrink: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <img src={j.logo} alt={j.company}
+                        style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">{job.position}</h3>
-                      <div className="flex items-center text-blue-600 font-semibold">
-                        <span>{job.company}</span>
-                        <ExternalLink size={16} className="ml-1" />
-                      </div>
-                      <div className="flex items-center text-gray-600 mt-1">
-                        <Calendar size={16} className="mr-1" />
-                        <span className="mr-4">{job.duration}</span>
-                        <MapPin size={16} className="mr-1" />
-                        <span>{job.location}</span>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{
+                        fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 16,
+                        color: 'var(--text-primary)', marginBottom: 3,
+                      }}>{j.role}</div>
+                      <div style={{ fontSize: 13, color: j.color, fontWeight: 600, marginBottom: 2 }}>{j.company}</div>
+                      <div style={{
+                        fontSize: 12, color: 'var(--text-muted)',
+                        display: 'flex', gap: 16, flexWrap: 'wrap',
+                      }}>
+                        <span>📅 {j.period}</span>
+                        <span>📍 {j.location}</span>
                       </div>
                     </div>
+                    <div style={{
+                      color: 'var(--text-muted)', fontSize: 18, fontWeight: 300,
+                      transform: isOpen ? 'rotate(90deg)' : 'rotate(0)',
+                      transition: 'transform 0.3s',
+                    }}>›</div>
                   </div>
-                  <button
-                    onClick={() => toggleExpanded(job.id)}
-                    className="flex items-center text-gray-500 hover:text-gray-700 transition-colors"
-                  >
-                    {expandedJob === job.id ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
-                  </button>
-                </div>
 
-                <p className="text-gray-700 mt-4">{job.description}</p>
+                  <div style={{ padding: '0 24px 12px 94px' }}>
+                    <p style={{
+                      fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0,
+                    }}>{j.desc}</p>
+                  </div>
 
-                {expandedJob === job.id && (
-                  <div className="mt-6 border-t pt-6">
-                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Key Responsibilities</h4>
-                    <ul className="space-y-2">
-                      {job.achievements.map((achievement, index) => (
-                        <li key={index} className="flex items-start">
-                          <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                          <span className="text-gray-700">{achievement}</span>
-                        </li>
+                  <div style={{
+                    maxHeight: isOpen ? 500 : 0, overflow: 'hidden',
+                    transition: 'max-height 0.4s ease',
+                  }}>
+                    <div style={{
+                      padding: '8px 24px 20px', borderTop: '1px solid var(--border-softer)',
+                    }}>
+                      <div style={{
+                        fontSize: 11, letterSpacing: '0.15em', color: 'var(--text-muted)',
+                        textTransform: 'uppercase', marginBottom: 12,
+                      }}>Key Contributions</div>
+                      {j.bullets.map((b, bi) => (
+                        <div key={bi} style={{
+                          display: 'flex', gap: 10, marginBottom: 8, alignItems: 'flex-start',
+                        }}>
+                          <div style={{
+                            width: 5, height: 5, borderRadius: '50%', background: j.color,
+                            marginTop: 6, flexShrink: 0,
+                          }} />
+                          <span style={{
+                            fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6,
+                          }}>{b}</span>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Consultancy Projects */}
-        <div className="bg-white rounded-xl p-8 shadow-md">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            Key Consultancy Projects
-          </h3>
-          <div className="space-y-6">
-            {consultancyProjects.map((project, index) => (
-              <div
-                key={index}
-                className="border-l-4 border-blue-600 pl-6 py-4"
-              >
-                <h4 className="font-semibold text-gray-900 mb-2">{project.title}</h4>
-                <p className="text-sm text-blue-600 mb-2">{project.duration}</p>
-                <p className="text-gray-700">{project.description}</p>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

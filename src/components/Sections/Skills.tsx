@@ -1,166 +1,139 @@
 import React, { useState } from 'react';
-import { Code, Database, Cloud, Map, Settings, ChevronDown } from 'lucide-react';
-import pythonLogo from '../../assets/images/python_logo.jpg';
-import djangoLogo from '../../assets/images/Django.jpg';
-import html5Logo from '../../assets/images/HTML5.jpg';
-import javascriptLogo from '../../assets/images/Javascript.jpg';
-import cssLogo from '../../assets/images/CSS3.jpg';
-import leafletLogo from '../../assets/images/leaflet.webp';
+import { useInView, sectionPad, container } from './_shared';
 
-import arcgisLogo from '../../assets/images/ArcGIS.jpg';
-import arcgisProLogo from '../../assets/images/ArcGIS_Pro.webp';
-import arcgisOnlineLogo from '../../assets/images/ArcGIS_Online_2.png';
-import qgisLogo from '../../assets/images/QGIS.png';
-import googleEarthEngineLogo from '../../assets/images/GoogleEarthEngine_2.png';
+const cats = [
+  { id: 'all', label: 'All' },
+  { id: 'geospatial', label: 'Geospatial' },
+  { id: 'programming', label: 'Programming' },
+  { id: 'platforms', label: 'Platforms' },
+];
 
-import remoteSensingLogo from '../../assets/images/remotesensing-logo.png';
-import cartographyLogo from '../../assets/images/cartography.webp';
-import geoaiLogo from '../../assets/images/GeoAI.webp';
-import microsoft365Logo from '../../assets/images/Microsft365_2.jpg';
-import earthObservationLogo from '../../assets/images/Earth_observation.png';
+const skills = [
+  { name: 'ArcGIS Pro', cat: 'geospatial', pct: 93, color: '#00b88f' },
+  { name: 'ArcGIS Online', cat: 'geospatial', pct: 92, color: '#00b88f' },
+  { name: 'QGIS', cat: 'geospatial', pct: 89, color: '#00b88f' },
+  { name: 'Remote Sensing', cat: 'geospatial', pct: 90, color: '#00b88f' },
+  { name: 'Earth Observation', cat: 'geospatial', pct: 92, color: '#00b88f' },
+  { name: 'Cartography', cat: 'geospatial', pct: 88, color: '#00b88f' },
+  { name: 'Google Earth Engine', cat: 'platforms', pct: 82, color: '#34d399' },
+  { name: 'Python', cat: 'programming', pct: 90, color: '#a78bfa' },
+  { name: 'Django', cat: 'programming', pct: 85, color: '#a78bfa' },
+  { name: 'JavaScript', cat: 'programming', pct: 80, color: '#a78bfa' },
+  { name: 'Leaflet.js', cat: 'programming', pct: 85, color: '#a78bfa' },
+  { name: 'PostGIS / PostgreSQL', cat: 'platforms', pct: 80, color: '#34d399' },
+  { name: 'Geo-AI / ML', cat: 'geospatial', pct: 85, color: '#00b88f' },
+  { name: 'Microsoft 365', cat: 'platforms', pct: 85, color: '#34d399' },
+  { name: 'Docker / Redis / Celery', cat: 'platforms', pct: 75, color: '#34d399' },
+  { name: 'LLM / RAG Systems', cat: 'platforms', pct: 78, color: '#34d399' },
+];
 
+const qualifications = [
+  'Geographic Information Systems (GIS)',
+  'Earth Observation & Data Processing',
+  'Marine & Coastal Environment Monitoring',
+  'Agricultural Drought Monitoring',
+  'Disaster Monitoring & Impact Assessment',
+  'Geo-Agentic AI Systems Design',
+  'Predictive Modelling & Machine Learning',
+  'Capacity Building & Stakeholder Engagement',
+];
 
 const Skills: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('all');
-
-  const skillCategories = [
-    { id: 'all', name: 'All Skills', icon: Settings },
-    { id: 'programming', name: 'Programming', icon: Code },
-    { id: 'geospatial', name: 'Geospatial', icon: Map },
-    { id: 'tools', name: 'Tools & Platforms', icon: Database },
-  ];
-
-  const skills = [
-    { name: 'Python', category: 'programming', proficiency: 90, logo: pythonLogo },
-    { name: 'Django', category: 'programming', proficiency: 85, logo: djangoLogo },
-    { name: 'HTML5', category: 'programming', proficiency: 80, logo: html5Logo },
-    { name: 'Javascript', category: 'programming', proficiency: 80, logo: javascriptLogo },
-    { name: 'CSS', category: 'programming', proficiency: 75, logo: cssLogo },
-    { name: 'Leaflet', category: 'programming', proficiency: 85, logo: leafletLogo},
-    { name: 'ArcGIS', category: 'tools', proficiency: 94, logo: arcgisLogo },
-    { name: 'ArcGIS Pro', category: 'tools', proficiency: 93, logo: arcgisProLogo},
-    { name: 'ArcGIS Online', category: 'tools', proficiency: 92, logo: arcgisOnlineLogo },
-    { name: 'QGIS', category: 'tools', proficiency: 89, logo: qgisLogo},
-    { name: 'Google Earth Engine', category: 'tools', proficiency: 82, logo: googleEarthEngineLogo},
-    { name: 'Remote Sensing', category: 'geospatial', proficiency: 90, logo: remoteSensingLogo},
-    { name: 'Cartography', category: 'geospatial', proficiency: 88, logo: cartographyLogo},
-    { name: 'GEOAI (AI&ML)', category: 'geospatial', proficiency: 85, logo: geoaiLogo },
-    { name: 'Microsoft 365', category: 'tools', proficiency: 85, logo: microsoft365Logo },
-    { name: 'Earth Observation', category: 'geospatial', proficiency: 92, logo: earthObservationLogo },
-  ];
-
-  const filteredSkills = activeCategory === 'all' 
-    ? skills 
-    : skills.filter(skill => skill.category === activeCategory);
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const [active, setActive] = useState('all');
+  const filtered = active === 'all' ? skills : skills.filter((s) => s.cat === active);
 
   return (
-    <section id="skills" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Skills & Technologies</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Comprehensive expertise in geospatial technologies, programming, and Earth observation 
-            data processing for environmental and agricultural applications.
-          </p>
+    <section id="skills" style={{ ...sectionPad, background: 'var(--bg-alt)' }}>
+      <div ref={ref} style={{
+        ...container,
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateY(0)' : 'translateY(32px)',
+        transition: 'opacity 0.8s ease, transform 0.8s ease',
+      }}>
+        <div style={{ marginBottom: 52 }}>
+          <div style={{
+            fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase',
+            color: 'var(--accent)', fontWeight: 600, marginBottom: 12,
+          }}>Technical Stack</div>
+          <h2 style={{
+            fontFamily: "'Syne',sans-serif", fontWeight: 800,
+            fontSize: 'clamp(32px,4vw,52px)', lineHeight: 1.08,
+            letterSpacing: '-0.025em', color: 'var(--text-primary)', margin: 0,
+          }}>
+            Skills &amp;{' '}
+            <span style={{
+              background: 'linear-gradient(90deg, var(--accent), #3b82f6)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            }}>Technologies</span>
+          </h2>
         </div>
 
-        {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {skillCategories.map((category) => {
-            const Icon = category.icon;
-            return (
-              <button
-                key={category.id}
-                onClick={() => setActiveCategory(category.id)}
-                className={`flex items-center px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                  activeCategory === category.id
-                    ? 'bg-blue-600 text-white shadow-lg transform scale-105'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                <Icon size={20} className="mr-2" />
-                {category.name}
-              </button>
-            );
-          })}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 40, flexWrap: 'wrap' }}>
+          {cats.map((c) => (
+            <button key={c.id} onClick={() => setActive(c.id)} style={{
+              padding: '8px 20px', borderRadius: 24, fontSize: 12, fontWeight: 600,
+              letterSpacing: '0.06em', cursor: 'pointer', transition: 'all 0.2s',
+              background: active === c.id ? 'var(--accent)' : 'var(--card-bg)',
+              color: active === c.id ? '#030812' : 'var(--text-secondary)',
+              border: active === c.id ? '1px solid transparent' : '1px solid var(--border-soft)',
+            }}>{c.label}</button>
+          ))}
         </div>
 
-        {/* Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredSkills.map((skill, index) => (
-            <div
-              key={index}
-              className="bg-gray-50 p-6 rounded-lg hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
-            >
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-white rounded-lg shadow-sm flex items-center justify-center mr-4">
-                  <img
-                    src={skill.logo}
-                    alt={skill.name}
-                    className="max-h-[48px] w-auto object-contain"
-                  />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{skill.name}</h3>
-                  <p className="text-sm text-gray-600 capitalize">{skill.category}</p>
-                </div>
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16,
+        }}>
+          {filtered.map((sk, i) => (
+            <div key={sk.name} style={{
+              background: 'var(--card-bg)', border: '1px solid var(--border-soft)',
+              borderRadius: 16, padding: '20px 24px',
+              opacity: inView ? 1 : 0,
+              transform: inView ? 'translateY(0)' : 'translateY(16px)',
+              transition: `opacity 0.6s ease ${i * 0.04}s, transform 0.6s ease ${i * 0.04}s, border-color 0.3s`,
+            }}
+              onMouseEnter={(e) => (e.currentTarget.style.borderColor = `${sk.color}55`)}
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'var(--border-soft)')}>
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12,
+              }}>
+                <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)' }}>{sk.name}</span>
+                <span style={{ fontSize: 12, color: sk.color, fontWeight: 700 }}>{sk.pct}%</span>
               </div>
-              
-              <div className="mt-4">
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
-                  <span>Proficiency</span>
-                  <span>{skill.proficiency}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="bg-gradient-to-r from-blue-600 to-teal-600 h-2 rounded-full transition-all duration-1000"
-                    style={{ width: `${skill.proficiency}%` }}
-                  ></div>
-                </div>
+              <div style={{ height: 3, background: 'var(--border-softer)', borderRadius: 2 }}>
+                <div style={{
+                  height: '100%', borderRadius: 2,
+                  background: `linear-gradient(90deg, ${sk.color}, ${sk.color}aa)`,
+                  width: inView ? `${sk.pct}%` : '0%',
+                  transition: `width 1.2s cubic-bezier(0.4,0,0.2,1) ${i * 0.04 + 0.3}s`,
+                  boxShadow: `0 0 8px ${sk.color}50`,
+                }} />
               </div>
             </div>
           ))}
         </div>
 
-        {/* Main Qualifications */}
-        <div className="mt-16 bg-gradient-to-r from-blue-50 to-teal-50 rounded-xl p-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            Main Qualifications
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              'Geographic Information Systems (GIS)',
-              'Earth Observation and Cartography',
-              'EO Data Processing',
-              'Marine/Coastal Environment Monitoring',
-              'Agricultural Drought Monitoring',
-              'Disaster Monitoring and Impact Assessment'
-            ].map((qualification, index) => (
-              <div
-                key={index}
-                className="bg-white p-4 rounded-lg shadow-sm flex items-center"
-              >
-                <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-                <span className="text-gray-800 font-medium">{qualification}</span>
+        <div style={{
+          marginTop: 56, padding: 36,
+          background: 'linear-gradient(135deg, var(--accent-soft), rgba(59,130,246,0.05))',
+          border: '1px solid var(--accent-border)', borderRadius: 20,
+        }}>
+          <div style={{
+            fontSize: 10, letterSpacing: '0.22em', color: 'var(--accent)',
+            textTransform: 'uppercase', marginBottom: 20,
+          }}>Core Qualifications</div>
+          <div style={{
+            display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 12,
+          }}>
+            {qualifications.map((q) => (
+              <div key={q} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{
+                  width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)',
+                  flexShrink: 0, boxShadow: '0 0 6px var(--accent-glow)',
+                }} />
+                <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{q}</span>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Languages */}
-        <div className="mt-8 bg-white rounded-xl p-8 shadow-md">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            Language Proficiency
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">Kiswahili</div>
-              <div className="text-sm text-gray-600">Mother Tongue</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-teal-600 mb-2">English</div>
-              <div className="text-sm text-gray-600">Proficient User</div>
-            </div>
           </div>
         </div>
       </div>

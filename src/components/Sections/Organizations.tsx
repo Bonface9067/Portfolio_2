@@ -1,190 +1,100 @@
 import React from 'react';
-import { Building2, Users, Award, ExternalLink } from 'lucide-react';
 import LocateLogo from '../../assets/images/LocateIT.jpg';
 import EsriLogo from '../../assets/images/ESRI_2.png';
 import MercyCorpsLogo from '../../assets/images/Mercycorps.jpg';
-import ICPACLogo from '../../assets/images/ICPAC.webp';
-import AgrifinLogo from '../../assets/images/Agrifin.webp';
-import SASSCALLogo from '../../assets/images/Sasscal.png';
-import GMESLogo from '../../assets/images/LOGO-GMES.png';
+import IcpacLogo from '../../assets/images/ICPAC.webp';
+import GmesLogo from '../../assets/images/LOGO-GMES.png';
+import SasscalLogo from '../../assets/images/Sasscal.png';
+import TTULogo from '../../assets/images/Taita-Taveta-University.webp';
+import { useInView, container } from './_shared';
+
+const orgs = [
+  { name: 'ICPAC', sub: 'Intergovernmental Authority on Development Climate Prediction & Applications Centre', img: IcpacLogo, role: 'Research Partner' },
+  { name: 'GMES & Africa', sub: 'Global Monitoring for Environment and Security — Africa Programme', img: GmesLogo, role: 'Consortium Project' },
+  { name: 'Kenya Space Agency', sub: 'National space programme authority', img: null, role: 'Policy Engagement', initials: 'KSA' },
+  { name: 'SASSCAL', sub: 'Southern African Science Service Centre for Climate Change and Adaptive Land Management', img: SasscalLogo, role: 'WeMAST Consortium' },
+  { name: 'MercyCorps AgriFin', sub: 'Financial inclusion for smallholder farmers in East Africa', img: MercyCorpsLogo, role: 'Geospatial Consultancy' },
+  { name: 'LocateIT Kenya', sub: 'Geospatial solutions firm leading Earth observation innovation in Kenya', img: LocateLogo, role: 'Current Employer' },
+  { name: 'ESRI Eastern Africa', sub: 'Leading GIS software and solutions provider for Africa', img: EsriLogo, role: 'Former Intern' },
+  { name: 'Taita Taveta University', sub: 'Centre of excellence in geoinformatics education in Kenya', img: TTULogo, role: 'Academic Institution' },
+] as const;
 
 const Organizations: React.FC = () => {
-  const employers = [
-    {
-      name: 'LocateIT Kenya Limited',
-      logo: LocateLogo,
-      role: 'GIS/Remote Sensing Analyst & Spatial Applications Research Expert',
-      duration: '2024 - Present',
-      description: 'Leading geospatial analysis and research projects',
-      website: 'https://locateit.co.ke'
-    },
-    {
-      name: 'ESRI Eastern Africa',
-      logo: EsriLogo,
-      role: 'Technical Intern',
-      duration: '2022',
-      description: 'GIS solutions development for education sector',
-      website: 'https://www.esriea.com/'
-    }
-  ];
-
-  const clientOrganizations = [
-    {
-      name: 'ICPAC',
-      logo: ICPACLogo,
-      description: 'IGAD Climate Prediction and Applications Centre',
-      project: 'Desert Locust Outbreak Monitoring',
-      website: 'https://www.icpac.net'
-    },
-    {
-      name: 'MercyCorps ASALs',
-      logo: MercyCorpsLogo,
-      description: 'Arid and Semi-Arid Lands Program',
-      project: 'Rangeland Management and Monitoring',
-      website: 'https://www.mercycorps.org'
-    },
-    {
-      name: 'MercyCorps AgriFin',
-      logo: AgrifinLogo,
-      description: 'Agricultural Finance Program',
-      project: 'Flooding Impacts Analysis',
-      website: 'https://mercycorpsagrifin.org/'
-    },
-    {
-      name: 'SASSCAL',
-      logo: SASSCALLogo,
-      description: 'Southern African Science Service Centre for Climate Change',
-      project: 'WeMAST Wetlands Monitoring System',
-      website: 'https://www.sasscal.org'
-    },
-    {
-      name: 'GMES&AFRICA',
-      logo: GMESLogo,
-      description: 'Global Monitoring for Environment and Security',
-      project: 'Coastal Geomorphological Mapping',
-      website: 'https://www.gmes-africa.org'
-    }
-  ];
+  const { ref, inView } = useInView<HTMLDivElement>(0.1);
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Organizations of Experience</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Professional collaborations with leading organizations in geospatial technology, 
-            climate science, and sustainable development across Africa.
-          </p>
+    <section id="organizations" style={{ padding: '80px 0', background: 'var(--bg-alt)' }}>
+      <div ref={ref} style={{
+        ...container,
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateY(0)' : 'translateY(32px)',
+        transition: 'opacity 0.8s ease, transform 0.8s ease',
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: 52 }}>
+          <div style={{
+            fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase',
+            color: 'var(--accent)', marginBottom: 12, fontWeight: 600,
+          }}>Network &amp; Partnerships</div>
+          <h2 style={{
+            fontFamily: "'Syne',sans-serif", fontWeight: 800,
+            fontSize: 'clamp(30px,3.8vw,50px)', lineHeight: 1.08,
+            letterSpacing: '-0.025em', color: 'var(--text-primary)', margin: 0,
+          }}>
+            Organisations &amp;{' '}
+            <span style={{
+              background: 'linear-gradient(90deg, var(--accent), #3b82f6)',
+              WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            }}>Affiliations</span>
+          </h2>
         </div>
 
-        {/* Employers Section */}
-        <div className="mb-16">
-          <div className="flex items-center justify-center mb-8">
-            <Building2 size={32} className="text-blue-600 mr-3" />
-            <h3 className="text-2xl font-bold text-gray-900">Employers</h3>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-8">
-            {employers.map((employer, index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl p-8 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-              >
-                <div className="flex items-center mb-6">
-                  <div className="min-w-[80px] max-w-[120px] bg-white rounded-lg shadow-sm flex items-center justify-center mr-6 p-2">
-                    <img
-                      src={employer.logo}
-                      alt={employer.name}
-                      className="max-h-[64px] w-auto object-contain"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-xl font-bold text-gray-900 mb-1">{employer.name}</h4>
-                    <p className="text-blue-600 font-semibold mb-1">{employer.role}</p>
-                    <p className="text-gray-600 text-sm">{employer.duration}</p>
-                  </div>
-                </div>
-                
-                <p className="text-gray-700 mb-4">{employer.description}</p>
-                
-                <button
-                  onClick={() => window.open(employer.website, '_blank')}
-                  className="flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                >
-                  <ExternalLink size={16} className="mr-2" />
-                  Visit Website
-                </button>
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16,
+        }}>
+          {orgs.map((o, i) => (
+            <div key={o.name} style={{
+              background: 'var(--card-bg)', border: '1px solid var(--border-soft)',
+              borderRadius: 14, padding: 20, textAlign: 'center',
+              transition: 'border-color 0.3s, transform 0.3s',
+              opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(16px)',
+              transitionDelay: `${i * 0.07}s`,
+            }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent-border)';
+                e.currentTarget.style.transform = 'translateY(-3px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-soft)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}>
+              <div style={{
+                width: 64, height: 64, borderRadius: 12, overflow: 'hidden',
+                margin: '0 auto 14px', background: 'var(--card-bg-hover)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {o.img ? (
+                  <img src={o.img} alt={o.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 6 }} />
+                ) : (
+                  <span style={{
+                    fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 20, color: 'var(--accent)',
+                  }}>{('initials' in o && o.initials) || o.name.slice(0, 2)}</span>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Client Organizations Section */}
-        <div>
-          <div className="flex items-center justify-center mb-8">
-            <Users size={32} className="text-teal-600 mr-3" />
-            <h3 className="text-2xl font-bold text-gray-900">Client Organizations</h3>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {clientOrganizations.map((client, index) => (
-              <div
-                key={index}
-                className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
-              >
-                <div className="text-center mb-4">
-                  <div className="min-w-[64px] max-w-[96px] bg-gray-50 rounded-lg flex items-center justify-center mx-auto mb-4 p-2">
-                    <img
-                      src={client.logo}
-                      alt={client.name}
-                      className="max-h-[48px] w-auto object-contain"
-                    />
-                  </div>
-                  <h4 className="font-bold text-gray-900 mb-2">{client.name}</h4>
-                  <p className="text-sm text-gray-600 mb-3">{client.description}</p>
-                </div>
-                
-                <div className="border-t pt-4">
-                  <div className="flex items-center mb-3">
-                    <Award size={16} className="text-teal-600 mr-2" />
-                    <span className="text-sm font-medium text-gray-700">Project:</span>
-                  </div>
-                  <p className="text-sm text-gray-600 mb-4">{client.project}</p>
-                  
-                  <button
-                    onClick={() => window.open(client.website, '_blank')}
-                    className="w-full flex items-center justify-center text-teal-600 hover:text-teal-800 font-medium text-sm transition-colors"
-                  >
-                    <ExternalLink size={14} className="mr-2" />
-                    Learn More
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Collaboration Stats */}
-        <div className="mt-16 bg-gradient-to-r from-blue-600 to-teal-600 rounded-xl p-8 text-white text-center">
-          <h3 className="text-2xl font-bold mb-6">Professional Network</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div>
-              <div className="text-3xl font-bold mb-2">2</div>
-              <div className="text-blue-100">Employers</div>
+              <div style={{
+                fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 13,
+                color: 'var(--text-primary)', marginBottom: 5, lineHeight: 1.3,
+              }}>{o.name}</div>
+              <div style={{
+                fontSize: 10, color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: 8,
+              }}>{o.sub}</div>
+              <div style={{
+                fontSize: 10, padding: '3px 9px', borderRadius: 20, display: 'inline-block',
+                background: 'var(--accent-soft)', color: 'var(--accent)',
+                border: '1px solid var(--accent-border)', letterSpacing: '0.08em',
+              }}>{o.role}</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold mb-2">5</div>
-              <div className="text-blue-100">Client Organizations</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold mb-2">8+</div>
-              <div className="text-blue-100">Major Projects</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold mb-2">4</div>
-              <div className="text-blue-100">Countries Covered</div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

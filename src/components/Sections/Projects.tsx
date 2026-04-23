@@ -1,434 +1,454 @@
-import React, { useState } from 'react';
-import { ExternalLink, Github, Calendar, Users, Code, X } from 'lucide-react';
-
-// Corrected image imports
+import React, { useEffect, useState } from 'react';
 import Locust from '../../assets/images/LOCUST.png';
 import Jiji from '../../assets/images/JIJI_LETU.png';
+import JijiAnalytics from '../../assets/images/JIJI_LETU_ANALYTICS.png';
+import JijiMobile from '../../assets/images/JIJI_LETU_MOBILE.png';
+import Mkulima from '../../assets/images/MKULIMA_SAUTI.png';
+import Aura from '../../assets/images/AuraCLIM.png';
+import Aura2 from '../../assets/images/AuraCLIM_2.png';
+import Aura3 from '../../assets/images/AuraCLIM_3.png';
+import Flooding from '../../assets/images/FLOODING.png';
+import GeoAI from '../../assets/images/GeoAI.webp';
 import Wemast from '../../assets/images/WEMAST.png';
-import Ramdss from '../../assets/images/RAMDSS.png';
 import Cogeos from '../../assets/images/COGEOS.jpg';
-import Flood from '../../assets/images/FLOODING.png';
+import Ramdss from '../../assets/images/RAMDSS.png';
+import terrawatch from '../../assets/images/TERRAWATCH.png';
+import { useInView, container } from './_shared';
 
-const Projects: React.FC = () => {
-  const [selectedProject, setSelectedProject] = useState<any>(null);
-  const [filter, setFilter] = useState('all');
+type Project = {
+  id: string; featured: boolean; category: string;
+  title: string; subtitle: string; year: string; client: string;
+  desc: string; longDesc?: string; tech: string[];
+  stats: Record<string, string>;
+  img: string; gallery?: string[]; color: string;
+};
 
-  const projects = [
-    {
-      id: 'jiji-letu',
-      title: 'JIJI LETU Emergency Response System',
-      description: 'Real-time emergency response and crisis management platform',
-      longDescription: `JIJI LETU is a comprehensive emergency response system that revolutionizes how emergency services respond to crises. The system integrates real-time location tracking, automated dispatch, and comprehensive incident management to reduce response times and help save lives.
+const projects: Project[] = [
+  {
+    id: 'jiji-letu', featured: true, category: 'emergency',
+    title: 'JIJI LETU', subtitle: 'AI-Powered Emergency Response System',
+    year: '2025', client: 'Innovation · Urban Resilience',
+    desc: 'Flood prediction, AI first-responder insights, and a citizen mobile app for urban emergencies in Kenyan cities.',
+    longDesc: `JIJI LETU is a next-generation emergency response platform that blends hydrological modelling, Geo-AI and real-time citizen engagement to reduce loss of life and property during urban crises.\n\nThree tightly integrated services: a Flood Prediction Service ingesting CHIRPS/GPM satellite rainfall and DEM-derived flow accumulation to forecast flood extent 24 hours ahead; an AI Insights Service providing responders with retrieval-augmented LLM guidance on their phones; and a Citizen Mobile Application with one-tap SOS, geo-tagged incident reporting, and live evacuation routing on dynamic flood maps.\n\nBuilt on Django + PostGIS + Redis + WebSocket dispatching, with Celery workers for model inference and a Leaflet-based operations dashboard for multi-agency coordination.`,
+    tech: ['Django', 'PostGIS', 'Redis', 'Celery', 'Leaflet', 'WebSocket', 'React Native', 'LLM/RAG', 'Docker'],
+    stats: { Coverage: 'Urban Kenya (pilot)', Platform: 'Django + PostGIS + React Native', Services: '3 integrated modules' },
+    img: Jiji, gallery: [Jiji, JijiAnalytics, JijiMobile], color: '#00b88f',
+  },
+  {
+    id: 'mkulima-sauti', featured: true, category: 'agriculture',
+    title: 'MKULIMA SAUTI', subtitle: 'Voice-First Agronomy Assistant',
+    year: '2026', client: 'Geo-AI Research · Kenya',
+    desc: "Voice-first, multilingual Geo-AI assistant answering Kenyan smallholder farmers' agronomy questions over IVR and WhatsApp.",
+    longDesc: `Mkulima Sauti ("Farmer's Voice") reaches smallholder farmers in rural Kenya on basic phone calls or WhatsApp voice notes in Kiswahili, Dholuo and Kikuyu.\n\nA farmer dials an Africa's Talking IVR or sends a voice note. Whisper-small with per-language LoRA adapters transcribes the audio; a hybrid RAG engine (pgvector + BM25 + RRF fusion) grounds the answer in a curated KALRO knowledge base, enriched with geo-context from Google Earth Engine (CHIRPS rainfall, Sentinel-2 NDVI) and SoilGrids scoped to the farmer's exact polygon-drawn farm. The answer is synthesised back to speech with Coqui XTTS-v2 and delivered in under 25 seconds.\n\nDjango modular monolith with nine apps, FastAPI micro-services for ASR and TTS, Celery + Redis, PostgreSQL + PostGIS + pgvector, and a React 19 operations dashboard.`,
+    tech: ['Django', 'FastAPI', 'Whisper + LoRA', 'Coqui XTTS-v2', 'pgvector', 'PostGIS', 'Google Earth Engine', 'React 19', 'Gemini/Claude'],
+    stats: { Languages: 'Kiswahili · Dholuo · Kikuyu · English', Pipeline: 'IVR → ASR → RAG → LLM → TTS', SLA: '< 25s end-to-end' },
+    img: Mkulima, color: '#4ade80',
+  },
+  {
+    id: 'auraclim', featured: true, category: 'climate',
+    title: 'AURACLIM KENYA', subtitle: 'Climate & Disease Intelligence Platform',
+    year: '2025–Present', client: 'Environmental Health Intelligence',
+    desc: 'Predicting climate-sensitive disease outbreaks across Kenya by fusing Earth Observation, climate and health surveillance data.',
+    longDesc: `AuraClim predicts climate-sensitive disease outbreaks (malaria, dengue, Rift Valley Fever) in Kenya — shifting from reactive outbreak response to proactive prevention for 3.3–3.5 million annual malaria cases.\n\nI designed the end-to-end product architecture integrating Sentinel-2, MODIS, Landsat, ERA5, GFS, CFSv2, CHIRPS and KHIS2 health surveillance. Predictive transmission models use environmental drivers including rainfall, temperature and vegetation dynamics, plus a Kenya-specific Social Vulnerability Index.\n\nMulti-modal generative AI (TerraMind) and agentic AI using Model Context Protocol (MCP) enable autonomous environmental monitoring, with a real-time early-warning alert framework for county-level health authorities.`,
+    tech: ['Sentinel-2/MODIS/Landsat', 'ERA5 · GFS · CHIRPS', 'KHIS2', 'Predictive Modelling', 'TerraMind GenAI', 'Model Context Protocol', 'Agentic AI'],
+    stats: { Diseases: 'Malaria · Dengue · Rift Valley Fever', Burden: '3.3–3.5M annual malaria cases', Stack: 'EO + Climate + KHIS2 + Agentic AI' },
+    img: Aura, gallery: [Aura, Aura2, Aura3], color: '#f59e0b',
+  },
+  {
+    id: 'terrawatch', featured: true, category: 'monitoring',
+    title: 'TERRAWATCH ASM', subtitle: 'Illegal Mining Environmental Surveillance',
+    year: '2025', client: 'Taita Taveta County',
+    desc: 'BigQuery-AI environmental surveillance detecting illegal artisanal mining and land degradation using multi-temporal satellite analysis.',
+    longDesc: `TerraWatch ASM is a BigQuery AI-powered surveillance system detecting illegal artisanal and small-scale mining (ASM) and monitoring land degradation in Taita Taveta County, Kenya.\n\nFull cloud-native architecture integrating Google Earth Engine, BigQuery, Vertex AI and Cloud Functions for continuous surveillance. Multi-temporal processing pipelines for Sentinel-2, Landsat and VIIRS power a mining risk scoring system combining 7 environmental indicators (NDVI, BSI, thermal anomalies and spectral mining indicators).\n\nAI-powered automated report generation uses Vertex AI with AI.GENERATE_TEXT, AI.FORECAST, ML.GENERATE_EMBEDDING and VECTOR_SEARCH. Includes 30-day environmental forecasting, real-time alert engine, and a Streamlit dashboard.`,
+    tech: ['Google Earth Engine', 'BigQuery AI', 'Vertex AI', 'Cloud Functions', 'Sentinel-2 · VIIRS', 'Streamlit', 'AI.FORECAST', 'Vector Search'],
+    stats: { Indicators: '7 environmental indicators', Forecast: '30-day prediction models', Stack: 'GEE · BigQuery · Vertex AI' },
+    img: terrawatch, color: '#a78bfa',
+  },
+  {
+    id: 'drought', featured: false, category: 'agriculture',
+    title: 'Agricultural Drought Monitoring', subtitle: 'Athi-Galana-Sabaki Basin',
+    year: '2023', client: 'Taita Taveta University',
+    desc: 'Spatio-temporal drought monitoring system for the Athi-Galana-Sabaki River Basin with early-warning capabilities.',
+    tech: ['Django', 'Python', 'QGIS Plugin', 'Satellite Imagery', 'TCI/VCI/ADI'],
+    stats: { Coverage: 'Athi-Galana-Sabaki Basin', Indices: '4 Drought Indices', Output: 'Web + QGIS Plugin' },
+    img: GeoAI, color: '#34d399',
+  },
+  {
+    id: 'wemast', featured: false, category: 'wetlands',
+    title: 'WeMAST', subtitle: 'Wetlands Monitoring — Southern Africa',
+    year: '2020–2023', client: 'SASSCAL',
+    desc: 'Wetland monitoring geoportal and mobile app for four transboundary river basins in Southern Africa.',
+    tech: ['QGIS Plugin', 'GeoServer', 'Web Development', 'Capacity Building'],
+    stats: { Basins: '4 Transboundary Basins', Platform: 'Web + Mobile + QGIS Plugin', Client: 'SASSCAL' },
+    img: Wemast, color: '#00b88f',
+  },
+  {
+    id: 'flooding', featured: false, category: 'agriculture',
+    title: 'Flooding Impact Assessment', subtitle: 'Kenya Agriculture & Infrastructure',
+    year: '2024', client: 'MercyCorps AgriFin',
+    desc: 'Comprehensive GIS and remote sensing flood impact assessment for agricultural production and infrastructure.',
+    tech: ['GIS', 'Remote Sensing', 'Hydrological Models', 'Mapographics'],
+    stats: { Scope: 'National Assessment', Focus: 'Smallholder Farmers', Output: 'Flood Impact Maps' },
+    img: Flooding, color: '#f59e0b',
+  },
+  {
+    id: 'locust', featured: false, category: 'monitoring',
+    title: 'Desert Locust Monitoring', subtitle: 'Horn of Africa',
+    year: '2025', client: 'ICPAC',
+    desc: 'Predictive methodology for desert locust outbreak stages across the Horn of Africa.',
+    tech: ['Remote Sensing', 'Predictive Modelling', 'Machine Learning', 'GIS'],
+    stats: { Coverage: 'Horn of Africa', Models: '2 Predictive Models', Stages: 'Breeding · Hoppers · Swarming' },
+    img: Locust, color: '#00b88f',
+  },
+  {
+    id: 'coastal', featured: false, category: 'coastal',
+    title: 'Coastal Geomorphological Mapping', subtitle: 'Indian Ocean Island States',
+    year: '2024', client: 'GMES&AFRICA',
+    desc: 'Automated shoreline extraction and trend analysis for eastern Africa Indian Ocean island countries.',
+    tech: ['Machine Learning', 'Image Processing', 'QGIS Plugin', 'Remote Sensing'],
+    stats: { Countries: 'Mauritius · Comoros · Madagascar · Seychelles', Tools: 'Web + QGIS Plugin', Focus: 'Shoreline Change' },
+    img: Cogeos, color: '#4ade80',
+  },
+  {
+    id: 'rangeland', featured: false, category: 'rangeland',
+    title: 'Rangeland Management Tools', subtitle: 'Wajir & Garissa Counties',
+    year: '2024', client: 'LocateIT Kenya Limited',
+    desc: 'Rangeland degradation assessment combining remote sensing, GIS and traditional ecological knowledge.',
+    tech: ['Remote Sensing', 'GIS', 'Field Data', 'Invasive Species Mapping'],
+    stats: { Counties: 'Wajir · Garissa', Species: 'Prosopis juliflora · Acacia reficiens', Focus: 'Pastoralist Livelihoods' },
+    img: Ramdss, color: '#a78bfa',
+  },
+];
 
-      The platform features advanced geospatial analysis capabilities, real-time communication tools, and predictive analytics to anticipate and prevent emergencies. Built with scalability in mind, it serves communities across multiple regions with efficient emergency coordination.
+const cats = [
+  { id: 'all', label: 'All Projects' },
+  { id: 'emergency', label: 'Emergency Response' },
+  { id: 'agriculture', label: 'Agriculture' },
+  { id: 'climate', label: 'Climate' },
+  { id: 'monitoring', label: 'EO Monitoring' },
+  { id: 'wetlands', label: 'Wetlands' },
+  { id: 'coastal', label: 'Coastal' },
+  { id: 'rangeland', label: 'Rangeland' },
+];
 
-      Key innovations include automated alert systems, mobile-first design for field operatives, integration of an AI assistance to provide step by step FirstAID guidance to first responders and integration with existing emergency infrastructure..`,
-      technologies: ['Django', 'PostgreSQL', 'Redis', 'Leaflet', 'WebSocket', 'Docker', 'Python'],
-      imageUrl: Jiji,
-      client: 'Innovation',
-      year: '2024',
-      featured: true,
-      category: 'emergency',
-      stats: {
-        platform: 'Real-time System',
-        features: 'Multi-agency Coordination',
-        technology: 'Django Framework'
-      }
-    },
-    {
-      id: 'agricultural-drought-monitoring',
-      title: 'Spatio-Temporal Agricultural Drought Monitoring',
-      description: 'Agricultural drought monitoring system for Athi-Galana-Sabaki River Basin',
-      longDescription: `A comprehensive agricultural drought monitoring system developed for the Athi-Galana-Sabaki River Basin to track drought conditions over time and space. The system provides early warning capabilities to farmers and stakeholders, enabling timely interventions to mitigate drought impacts.
+const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ project, onClose }) => {
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', fn);
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', fn); document.body.style.overflow = ''; };
+  }, [onClose]);
 
-      The platform integrates satellite imagery data curation, index computation algorithms, and statistical analysis to provide accurate drought assessments. Key indices include Temperature Condition Index, Vegetation Condition Index, Precipitation Index, and Agricultural Drought Index.
-
-      The system features a Django-based web platform and includes a QGIS plugin for professional users, providing access to analysis-ready data and statistical presentations based on regions of interest. This climate resilience platform supports data-driven decision making for agricultural stakeholders.`,
-      technologies: ['Django', 'Python', 'QGIS', 'Satellite Imagery', 'Statistical Analysis', 'Web Development'],
-      imageUrl: 'https://images.pexels.com/photos/1181673/pexels-photo-1181673.jpeg?auto=compress&cs=tinysrgb&w=800',
-      client: 'Taita Taveta University',
-      year: '2023',
-      featured: false,
-      category: 'agriculture',
-      stats: {
-        coverage: 'Athi-Galana-Sabaki Basin',
-        indices: '4 Drought Indices',
-        platform: 'Web + QGIS Plugin'
-      }
-    },
-    {
-      id: 'wemasst-wetlands',
-      title: 'Wetlands Monitoring and Assessment Service for Transboundary Basins (WeMAST)',
-      description: 'Wetland monitoring system for transboundary River Basins in Southern Africa',
-      longDescription: `LocateIT was part of a consortium of companies (TSC, GIDEA and GSC) contracted by SASSCAL to develop a comprehensive wetland monitoring system. The WeMAST geoportal and mobile application provide monitoring and assessment capabilities for four transboundary River Basins: Cuvelai, Okavango, Limpopo, and Zambezi.
-
-      The web service enhances user interactivity and information retrieval on wetland state and health. WeMAST geoportal provides easy access to Analysis Ready Spatial Data (ARSD) including Land Use Land Cover (LULC), vegetation cover data, water quality, water extent, and resilience indicators such as flood susceptibility areas.
-
-      The platform features multi-temporal layer comparison capabilities, QGIS plugin development for wetland assessment and monitoring, comprehensive tutorials and training materials, and extensive capacity building for stakeholders and end-users.`,
-      technologies: ['QGIS Plugin Development', 'GeoServer', 'Web Development', 'Spatial Data Management', 'Training Materials', 'Capacity Building'],
-      imageUrl: Wemast,
-      site_url: 'http://gmes2-geoportal.sasscal.org/',
-      client: 'SASSCAL',
-      year: '2020-2023',
-      featured: true,
-      category: 'wetlands',
-      stats: {
-        basins: '4 Transboundary Basins',
-        platform: 'Web + Mobile + QGIS Plugin',
-        consortium: 'Multi-company Project'
-      }
-    },
-    {
-      id: 'flooding-impacts-analysis',
-      title: 'Geospatial Analysis of Flooding Impacts on Agriculture and Infrastructure',
-      description: 'Flood impact assessment for agricultural production and infrastructure in Kenya',
-      longDescription: `This project assessed the extent and impact of flooding on agricultural production and infrastructure in Kenya to support MercyCorps AgriFin's mission of enhancing financial inclusion and resilience for smallholder farmers. The analysis provided actionable insights into flood effects on key agricultural zones.
-
-      The project involved comprehensive data collection from satellite imagery, hydrological models, and published resources. Advanced GIS and remote sensing techniques were used to develop flood maps and impact assessments showing effects on agricultural production and infrastructure.
-
-      The analysis included phased assessment identifying flooded areas, correlation with agricultural production data, and directed assessment of counties with significant flood impacts. Comprehensive reports and mapographics were developed for stakeholder communication.`,
-      technologies: ['GIS', 'Remote Sensing', 'Satellite Imagery', 'Hydrological Models', 'Spatial Analysis', 'Mapographics'],
-      imageUrl: Flood,
-      client: 'MercyCorps AgriFin',
-      year: '2024',
-      featured: false,
-      category: 'agriculture',
-      stats: {
-        scope: 'National Assessment',
-        focus: 'Agricultural Zones',
-        output: 'Flood Impact Maps'
-      }
-    },
-    {
-      id: 'desert-locust-monitoring',
-      title: 'Desert Locust Outbreak Monitoring and Prediction System',
-      description: 'Methodology development for establishing different states of desert locust outbreaks',
-      longDescription: `This project focuses on supporting ICPAC in improving decision-making capabilities by developing robust methodologies and systems for desert locust monitoring. The initiative leverages scientific research, remote sensing technologies, and technical expertise to strengthen early warning systems and optimize response strategies.
-
-      The project involves integration of historical records, real-time field observations, satellite imagery, and agro-meteorological models for comprehensive locust monitoring. Advanced predictive modeling includes development of Locust breeding Suitability models and Vegetation onset and desert locust stay duration models.
-
-      Key innovations include establishment of criteria to distinguish locust outbreak stages (breeding, hopper bands, and swarming) and validation using historical data and real-time observations. The system aims to mitigate socio-economic impacts caused by locust invasions across the Horn of Africa.`,
-      technologies: ['Remote Sensing', 'Predictive Modeling', 'Satellite Imagery', 'Agro-meteorological Models', 'Machine Learning', 'GIS'],
-      imageUrl: Locust,
-      client: 'ICPAC',
-      year: '2025',
-      featured: false,
-      category: 'monitoring',
-      stats: {
-        coverage: 'Horn of Africa',
-        models: '2 Predictive Models',
-        stages: '3 Outbreak Stages'
-      }
-    },
-    {
-      id: 'coastal-monitoring',
-      title: 'Coastal Geomorphological Mapping and Shoreline Change Analysis',
-      description: 'Coastal monitoring platform for eastern Africa Indian Ocean Island countries',
-      longDescription: `Executed under the GMES&AFRICA programme, this project developed tools and a platform for monitoring coastal changes in Mauritius, Comoros, Madagascar, and Seychelles. The web platform delivers timely information on shoreline positional shifts and coastal erosion dynamics.
-
-      The project involved automation of shoreline extraction from remote sensing data using machine learning and digital image processing techniques. Implementation included shoreline trend mapping and analysis using mathematical algorithms to provide insights on coastal change drivers.
-
-      A QGIS plugin was developed as an integrated analysis tool providing analysis components for customary and professional users to support decision making. The project included comprehensive capacity building trainings and technical documentation for stakeholders and end-users.`,
-      technologies: ['Machine Learning', 'Digital Image Processing', 'QGIS', 'Remote Sensing', 'Mathematical Algorithms', 'Web Platform'],
-      imageUrl: Cogeos,
-      site_url: 'http://coastalerosion.rcmrd.org/',
-      client: 'GMES&AFRICA',
-      year: '2024',
-      featured: false,
-      category: 'coastal',
-      stats: {
-        countries: '4 Island Nations',
-        tools: 'Web Platform + QGIS Plugin',
-        focus: 'Shoreline Analysis'
-      }
-    },
-    {
-      id: 'rangeland-management',
-      title: 'Rangeland Management and Monitoring Tools',
-      description: 'Assessment of rangeland degradation in Wajir and Garissa counties',
-      longDescription: `This project focuses on assessing the extent and impacts of rangeland degradation in Wajir and Garissa counties to improve rangeland management and support the sustainability of pastoralist livelihoods. The approach combines remote sensing, GIS techniques, and traditional knowledge.
-
-      The project involves comprehensive data collection from satellite imagery and agro-meteorological models, along with field data collection of invasive species (prosopis juliflora and acacia reficiens). Advanced processing produces clean, pre-processed remote sensing and GIS datasets for accurate rangeland monitoring.
-
-      Key outputs include detailed rangeland maps highlighting vegetation states, water resources, and degraded areas. Impact maps assess rangeland degradation patterns to provide actionable insights for data-driven decision-making, sustainable resource management, and long-term rangeland regeneration.`,
-      technologies: ['Remote Sensing', 'GIS', 'Satellite Imagery', 'Field Data Collection', 'Agro-meteorological Models', 'Spatial Analysis'],
-      imageUrl: Ramdss,
-      site_url: 'http://107.191.43.246:3001/',
-      client: 'LocateIT Kenya Limited',
-      year: '2024',
-      featured: false,
-      category: 'rangeland',
-      stats: {
-        counties: '2 Counties',
-        species: 'Invasive Species Mapping',
-        focus: 'Pastoralist Livelihoods'
-      }
-    }
-  ];
-
-  const categories = [
-    { id: 'all', name: 'All Projects' },
-    { id: 'emergency', name: 'Emergency Response' },
-    { id: 'agriculture', name: 'Agriculture' },
-    { id: 'wetlands', name: 'Wetlands Monitoring' },
-    { id: 'monitoring', name: 'Environmental Monitoring' },
-    { id: 'coastal', name: 'Coastal Analysis' },
-    { id: 'rangeland', name: 'Rangeland Management' }
-  ];
-
-  const filteredProjects = filter === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === filter);
-
-  const featuredProjects = projects.filter(project => project.featured);
+  const imgs = project.gallery || [project.img];
 
   return (
-    <section id="projects" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Projects</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Transformative geospatial solutions that drive real-world impact across 
-            emergency response, agriculture, and environmental monitoring.
+    <div style={{
+      position: 'fixed', inset: 0, background: 'rgba(2,5,14,0.88)',
+      backdropFilter: 'blur(12px)', zIndex: 1000, display: 'flex',
+      alignItems: 'center', justifyContent: 'center', padding: 24,
+    }} onClick={onClose}>
+      <div style={{
+        background: 'var(--bg-alt)', border: '1px solid var(--border-soft)',
+        borderRadius: 24, maxWidth: 860, width: '100%', maxHeight: '88vh',
+        overflowY: 'auto', position: 'relative',
+      }} onClick={(e) => e.stopPropagation()}>
+        <button onClick={onClose} style={{
+          position: 'absolute', top: 20, right: 20, width: 36, height: 36,
+          borderRadius: '50%', background: 'var(--card-bg-hover)',
+          border: '1px solid var(--border-soft)', color: 'var(--text-primary)',
+          fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', zIndex: 10, lineHeight: 1,
+        }}>×</button>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: imgs.length > 1 ? '1fr 1fr 1fr' : '1fr',
+          gap: 3, height: 240, overflow: 'hidden', borderRadius: '24px 24px 0 0',
+        }}>
+          {imgs.map((src, i) => (
+            <div key={i} style={{
+              overflow: 'hidden',
+              gridColumn: i === 0 && imgs.length > 1 ? 'span 3' : 'span 1',
+              height: i === 0 ? (imgs.length > 1 ? 160 : 240) : 80,
+            }}>
+              <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          ))}
+        </div>
+
+        <div style={{ padding: 32 }}>
+          <div style={{
+            fontSize: 10, letterSpacing: '0.2em', color: project.color,
+            textTransform: 'uppercase', marginBottom: 6,
+          }}>{project.client} · {project.year}</div>
+          <h2 style={{
+            fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 26,
+            color: 'var(--text-primary)', margin: 0, lineHeight: 1.1,
+          }}>{project.title}</h2>
+          <div style={{ fontSize: 14, color: 'var(--text-secondary)', marginTop: 4 }}>
+            {project.subtitle}
+          </div>
+
+          <div style={{ marginTop: 20 }}>
+            {(project.longDesc || project.desc).split('\n\n').map((p, i) => (
+              <p key={i} style={{
+                color: 'var(--text-secondary)', lineHeight: 1.75, fontSize: 14, marginBottom: 16,
+              }}>{p.trim()}</p>
+            ))}
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginTop: 24 }}>
+            <div>
+              <div style={{
+                fontSize: 11, letterSpacing: '0.18em', color: 'var(--text-muted)',
+                textTransform: 'uppercase', marginBottom: 12,
+              }}>Technologies</div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {project.tech.map((t) => (
+                  <span key={t} style={{
+                    fontSize: 11, padding: '4px 10px', borderRadius: 20,
+                    background: `${project.color}18`, color: project.color,
+                    border: `1px solid ${project.color}44`,
+                  }}>{t}</span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div style={{
+                fontSize: 11, letterSpacing: '0.18em', color: 'var(--text-muted)',
+                textTransform: 'uppercase', marginBottom: 12,
+              }}>Project Stats</div>
+              {Object.entries(project.stats).map(([k, v]) => (
+                <div key={k} style={{
+                  display: 'flex', justifyContent: 'space-between',
+                  borderBottom: '1px solid var(--border-softer)', paddingBottom: 8, marginBottom: 8,
+                }}>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'capitalize' }}>{k}</span>
+                  <span style={{
+                    fontSize: 12, color: 'var(--text-primary)', fontWeight: 600,
+                    textAlign: 'right', maxWidth: '55%',
+                  }}>{v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Projects: React.FC = () => {
+  const { ref, inView } = useInView<HTMLDivElement>(0.1);
+  const [filter, setFilter] = useState('all');
+  const [modal, setModal] = useState<Project | null>(null);
+
+  const featured = projects.filter((p) => p.featured);
+  const filtered = filter === 'all' ? projects : projects.filter((p) => p.category === filter);
+
+  return (
+    <section id="projects" style={{
+      padding: '96px 0', background: 'var(--bg-alt)', position: 'relative', overflow: 'hidden',
+    }}>
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, opacity: 0.4, pointerEvents: 'none',
+        backgroundImage:
+          'linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px)',
+        backgroundSize: '64px 64px',
+      }} />
+
+      <div ref={ref} style={{
+        ...container,
+        opacity: inView ? 1 : 0,
+        transform: inView ? 'translateY(0)' : 'translateY(32px)',
+        transition: 'opacity 0.8s ease, transform 0.8s ease',
+        position: 'relative',
+      }}>
+        <div style={{
+          display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48,
+          alignItems: 'end', marginBottom: 64,
+        }} className="proj-head-grid">
+          <div>
+            <div style={{
+              fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase',
+              color: 'var(--accent)', marginBottom: 12, fontWeight: 600,
+            }}>Selected Work</div>
+            <h2 style={{
+              fontFamily: "'Syne',sans-serif", fontWeight: 800,
+              fontSize: 'clamp(32px,4vw,52px)', lineHeight: 1.08,
+              letterSpacing: '-0.025em', color: 'var(--text-primary)', margin: 0,
+            }}>
+              Featured{' '}
+              <span style={{
+                background: 'linear-gradient(90deg, var(--accent), #3b82f6)',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              }}>Projects</span>
+            </h2>
+          </div>
+          <p style={{
+            color: 'var(--text-secondary)', lineHeight: 1.75, fontSize: 15, margin: 0,
+          }}>
+            Geospatial intelligence and Geo-AI systems delivered across emergency response, climate health,
+            agriculture and environmental monitoring — from Nairobi to Southern Africa.
           </p>
         </div>
 
-        {/* Featured Projects */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-16">
-          {featuredProjects.map((project) => (
-            <div
-              key={project.id}
-              className="bg-gradient-to-br from-blue-50 to-teal-50 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            >
-              {/* Fixed: Added actual image display */}
-              <div className="h-48 relative overflow-hidden">
-                {project.imageUrl ? (
-                  <img 
-                    src={project.imageUrl} 
-                    alt={project.title} 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="bg-gradient-to-br from-blue-600 to-teal-600 w-full h-full" />
-                )}
-                <div className="absolute inset-0 bg-black/20"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <div className="flex items-center justify-between text-white">
-                    <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
-                      {project.client}
-                    </span>
-                    <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
-                      {project.year}
-                    </span>
-                  </div>
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+          gap: 24, marginBottom: 72,
+        }}>
+          {featured.map((p, i) => (
+            <article key={p.id} style={{
+              background: 'var(--card-bg)', border: '1px solid var(--border-soft)',
+              borderRadius: 20, overflow: 'hidden', cursor: 'pointer',
+              transition: 'border-color 0.3s, transform 0.3s',
+              opacity: inView ? 1 : 0, transform: inView ? 'translateY(0)' : 'translateY(20px)',
+              transitionDelay: `${i * 0.1}s`,
+            }}
+              onClick={() => setModal(p)}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = `${p.color}66`;
+                e.currentTarget.style.transform = 'translateY(-4px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-soft)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}>
+              <div style={{ height: 200, overflow: 'hidden', position: 'relative' }}>
+                <img src={p.img} alt={p.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }} />
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'linear-gradient(to top, rgba(5,8,18,0.75) 0%, transparent 60%)',
+                }} />
+                <div style={{
+                  position: 'absolute', bottom: 14, left: 14, right: 14,
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end',
+                }}>
+                  <span style={{
+                    fontSize: 11, padding: '4px 12px', borderRadius: 20,
+                    background: 'rgba(5,8,18,0.7)', backdropFilter: 'blur(8px)',
+                    border: '1px solid rgba(255,255,255,0.15)', color: '#f0f4ff',
+                  }}>{p.client}</span>
+                  <span style={{
+                    fontSize: 11, padding: '4px 10px', borderRadius: 20,
+                    background: `${p.color}33`, border: `1px solid ${p.color}66`, color: p.color,
+                  }}>{p.year}</span>
                 </div>
               </div>
-              
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{project.title}</h3>
-                <p className="text-gray-600 mb-4">{project.description}</p>
-                
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.technologies.slice(0, 3).map((tech, index) => (
-                    <span
-                      key={index}
-                      className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium"
-                    >
-                      {tech}
-                    </span>
+              <div style={{ padding: 24 }}>
+                <div style={{
+                  fontSize: 10, letterSpacing: '0.2em', color: p.color,
+                  textTransform: 'uppercase', marginBottom: 6,
+                }}>{p.title}</div>
+                <h3 style={{
+                  fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 18,
+                  color: 'var(--text-primary)', marginBottom: 10, lineHeight: 1.25,
+                }}>{p.subtitle}</h3>
+                <p style={{
+                  fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 16,
+                }}>{p.desc}</p>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 18 }}>
+                  {p.tech.slice(0, 4).map((t) => (
+                    <span key={t} style={{
+                      fontSize: 10, padding: '3px 9px', borderRadius: 20,
+                      background: `${p.color}18`, color: p.color, border: `1px solid ${p.color}35`,
+                    }}>{t}</span>
                   ))}
-                  {project.technologies.length > 3 && (
-                    <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
-                      +{project.technologies.length - 3} more
-                    </span>
+                  {p.tech.length > 4 && (
+                    <span style={{
+                      fontSize: 10, padding: '3px 9px', borderRadius: 20,
+                      background: 'var(--card-bg-hover)', color: 'var(--text-muted)',
+                    }}>+{p.tech.length - 4}</span>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => setSelectedProject(project)}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-semibold"
-                  >
-                    View Details
-                  </button>
-                  <div className="flex space-x-2">
-                    {project.site_url && (
-                      <a
-                        href={project.site_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 text-gray-500 hover:text-blue-600 transition-colors"
-                      >
-                        <ExternalLink size={20} />
-                      </a>
-                    )}
-                    <button className="p-2 text-gray-500 hover:text-blue-600 transition-colors">
-                      <Github size={20} />
-                    </button>
-                  </div>
+                <button style={{
+                  fontSize: 12, fontWeight: 700, color: '#030812',
+                  background: `linear-gradient(90deg, ${p.color}, ${p.color}cc)`,
+                  border: 'none', padding: '8px 18px', borderRadius: 6, cursor: 'pointer',
+                  letterSpacing: '0.06em',
+                }}>View Details →</button>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginBottom: 36 }}>
+          <h3 style={{
+            fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 22,
+            color: 'var(--text-primary)', margin: 0, whiteSpace: 'nowrap',
+          }}>All Projects</h3>
+          <div style={{ flex: 1, height: 1, background: 'var(--border-soft)' }} />
+        </div>
+
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 32 }}>
+          {cats.map((c) => (
+            <button key={c.id} onClick={() => setFilter(c.id)} style={{
+              padding: '7px 16px', borderRadius: 20, fontSize: 11, fontWeight: 600,
+              letterSpacing: '0.06em', cursor: 'pointer', transition: 'all 0.2s',
+              background: filter === c.id ? 'var(--accent)' : 'var(--card-bg)',
+              color: filter === c.id ? '#030812' : 'var(--text-secondary)',
+              border: filter === c.id ? '1px solid transparent' : '1px solid var(--border-soft)',
+            }}>{c.label}</button>
+          ))}
+        </div>
+
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16,
+        }}>
+          {filtered.map((p) => (
+            <div key={p.id} style={{
+              background: 'var(--card-bg)', border: '1px solid var(--border-soft)',
+              borderRadius: 16, overflow: 'hidden', cursor: 'pointer',
+              transition: 'border-color 0.3s, transform 0.3s',
+            }}
+              onClick={() => setModal(p)}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = `${p.color}55`;
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border-soft)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}>
+              <div style={{ height: 130, overflow: 'hidden', position: 'relative' }}>
+                <img src={p.img} alt={p.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div style={{
+                  position: 'absolute', top: 10, right: 10, fontSize: 10, padding: '3px 8px',
+                  borderRadius: 20, background: 'rgba(5,8,18,0.75)', color: '#f0f4ff',
+                  backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.15)',
+                }}>{p.year}</div>
+              </div>
+              <div style={{ padding: 16 }}>
+                <div style={{
+                  fontSize: 10, color: p.color, letterSpacing: '0.15em',
+                  textTransform: 'uppercase', marginBottom: 4,
+                }}>{p.title}</div>
+                <div style={{
+                  fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: 13,
+                  color: 'var(--text-primary)', marginBottom: 6, lineHeight: 1.3,
+                }}>{p.subtitle}</div>
+                <p className="line-clamp-2" style={{
+                  fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 8,
+                }}>{p.desc}</p>
+                <div style={{ fontSize: 11, color: p.color, fontWeight: 600 }}>
+                  {p.client} · Learn More →
                 </div>
               </div>
             </div>
           ))}
         </div>
-
-        {/* All Projects */}
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">All Projects</h3>
-          
-          {/* Filter Buttons */}
-          <div className="flex flex-wrap gap-3 mb-8">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setFilter(category.id)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
-                  filter === category.id
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
-
-          {/* Projects Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProjects.map((project) => (
-              <div
-                key={project.id}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
-              >
-                {/* Fixed: Added actual image display */}
-                <div className="h-32 relative">
-                  {project.imageUrl ? (
-                    <img 
-                      src={project.imageUrl} 
-                      alt={project.title} 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="bg-gradient-to-br from-gray-100 to-gray-200 w-full h-full" />
-                  )}
-                  <div className="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs text-gray-600">
-                    {project.year}
-                  </div>
-                </div>
-                
-                <div className="p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2">{project.title}</h4>
-                  <p className="text-sm text-gray-600 mb-3">{project.description}</p>
-                  <p className="text-xs text-blue-600 font-medium mb-3">{project.client}</p>
-                  
-                  <button
-                    onClick={() => setSelectedProject(project)}
-                    className="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors"
-                  >
-                    Learn More →
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Project Modal */}
-        {selectedProject && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl max-w-4xl max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-6">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedProject.title}</h2>
-                    <div className="flex items-center text-gray-600">
-                      <span className="mr-4">{selectedProject.client}</span>
-                      <Calendar size={16} className="mr-1" />
-                      <span>{selectedProject.year}</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setSelectedProject(null)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <X size={24} />
-                  </button>
-                </div>
-
-                <div className="mb-6">
-                  {/* Fixed: Added actual image display */}
-                  <div className="h-64 rounded-lg mb-4 overflow-hidden">
-                    {selectedProject.imageUrl ? (
-                      <img 
-                        src={selectedProject.imageUrl} 
-                        alt={selectedProject.title} 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="bg-gradient-to-br from-blue-600 to-teal-600 w-full h-full" />
-                    )}
-                  </div>
-                </div>
-
-                <div className="prose prose-gray max-w-none mb-6">
-                  {selectedProject.longDescription.split('\n\n').map((paragraph: string, index: number) => (
-                    <p key={index} className="mb-4 text-gray-700 leading-relaxed">
-                      {paragraph.trim()}
-                    </p>
-                  ))}
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Technologies Used</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProject.technologies.map((tech: string, index: number) => (
-                        <span
-                          key={index}
-                          className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Project Stats</h4>
-                    <div className="space-y-2">
-                      {Object.entries(selectedProject.stats).map(([key, value]) => (
-                        <div key={key} className="flex justify-between">
-                          <span className="text-gray-600 capitalize">{key}:</span>
-                          <span className="font-medium text-gray-900">{value as string}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex space-x-4 pt-4 border-t">
-                  {/* Added live site URL functionality */}
-                  {selectedProject.site_url && (
-                    <a 
-                      href={selectedProject.site_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      <ExternalLink size={16} className="mr-2" />
-                      View Live
-                    </a>
-                  )}
-                  <button className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                    <Github size={16} className="mr-2" />
-                    Source Code
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+
+      {modal && <ProjectModal project={modal} onClose={() => setModal(null)} />}
+      <style>{`
+        @media (max-width: 860px) {
+          .proj-head-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+        }
+      `}</style>
     </section>
   );
 };

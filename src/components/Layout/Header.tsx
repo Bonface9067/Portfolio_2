@@ -1,105 +1,138 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, MapPin, Code, User, Briefcase, FolderOpen, BookOpen, Mail } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
+
+const navigation = [
+  { name: 'About', href: '#about' },
+  { name: 'Research', href: '#research' },
+  { name: 'Skills', href: '#skills' },
+  { name: 'Experience', href: '#experience' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'Publications', href: '#publications' },
+];
 
 const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState('home');
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+      const ids = ['home', 'about', 'research', 'skills', 'experience', 'projects', 'publications', 'organizations', 'contact'];
+      let cur = 'home';
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && window.scrollY >= el.offsetTop - 80) cur = id;
+      }
+      setActive(cur);
     };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navigation = [
-    { name: 'Home', href: '#home', icon: MapPin },
-    { name: 'About', href: '#about', icon: User },
-    { name: 'Skills', href: '#skills', icon: Code },
-    { name: 'Experience', href: '#experience', icon: Briefcase },
-    { name: 'Projects', href: '#projects', icon: FolderOpen },
-    { name: 'Publications', href: '#publications', icon: BookOpen },
-    { name: 'Contact', href: '#contact', icon: Mail },
-  ];
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    setIsMenuOpen(false);
+  const go = (href: string) => {
+    const el = document.querySelector(href) as HTMLElement | null;
+    if (el) window.scrollTo({ top: el.offsetTop - 60, behavior: 'smooth' });
+    setOpen(false);
   };
 
   return (
-    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
-    }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <h1 className={`text-xl font-bold transition-colors duration-300 ${
-                isScrolled ? 'text-gray-900' : 'text-white'
-              }`}>
-                Bonface Odhiambo
-              </h1>
-              <p className={`text-sm transition-colors duration-300 ${
-                isScrolled ? 'text-gray-600' : 'text-gray-200'
-              }`}>
-                Geospatial Data Scientist
-              </p>
-            </div>
-          </div>
-          
-          <nav className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
-              {navigation.map((item) => (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 hover:bg-blue-600 hover:text-white ${
-                    isScrolled ? 'text-gray-700 hover:bg-blue-600' : 'text-gray-200 hover:bg-white/20'
-                  }`}
-                >
-                  {item.name}
-                </button>
-              ))}
-            </div>
-          </nav>
+    <header
+      style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, height: 60,
+        display: 'flex', alignItems: 'center', padding: '0 clamp(20px, 4vw, 40px)',
+        background: scrolled ? 'color-mix(in srgb, var(--bg-primary) 90%, transparent)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(16px)' : 'none',
+        borderBottom: scrolled ? '1px solid var(--border-soft)' : '1px solid transparent',
+        transition: 'background 0.4s, border-color 0.4s',
+      }}
+    >
+      <a
+        href="#home"
+        onClick={(e) => { e.preventDefault(); go('#home'); }}
+        style={{
+          fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 20,
+          letterSpacing: '-0.03em', color: 'var(--text-primary)',
+          textDecoration: 'none', marginRight: 'auto',
+        }}
+      >
+        B<span style={{ color: 'var(--accent)' }}>O</span>
+      </a>
 
-          <div className="md:hidden">
+      <nav className="hidden md:flex" style={{ alignItems: 'center' }}>
+        {navigation.map((n) => {
+          const id = n.href.replace('#', '');
+          const isActive = active === id;
+          return (
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`inline-flex items-center justify-center p-2 rounded-md transition-colors duration-200 ${
-                isScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-gray-200 hover:bg-white/20'
-              }`}
+              key={n.name}
+              onClick={() => go(n.href)}
+              style={{
+                fontSize: 11, fontWeight: 500, letterSpacing: '0.1em', padding: '8px 13px',
+                textTransform: 'uppercase', background: 'transparent', border: 'none', cursor: 'pointer',
+                color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+                fontFamily: "'DM Sans', sans-serif", transition: 'color 0.2s',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--accent)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = isActive ? 'var(--accent)' : 'var(--text-secondary)')}
             >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {n.name}
             </button>
-          </div>
+          );
+        })}
+        <button
+          onClick={() => go('#contact')}
+          style={{
+            marginLeft: 12, padding: '7px 18px', borderRadius: 6,
+            background: 'var(--accent-soft)', border: '1px solid var(--accent-border)',
+            color: 'var(--accent)', fontSize: 11, fontWeight: 600, letterSpacing: '0.1em',
+            textTransform: 'uppercase', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif",
+          }}
+        >
+          Contact
+        </button>
+        <div style={{ marginLeft: 10 }}>
+          <ThemeToggle compact />
         </div>
+      </nav>
+
+      <div className="md:hidden" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <ThemeToggle compact />
+        <button
+          onClick={() => setOpen(!open)}
+          style={{ background: 'transparent', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', padding: 6 }}
+          aria-label="Toggle menu"
+        >
+          {open ? <X size={22} /> : <Menu size={22} />}
+        </button>
       </div>
 
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/95 backdrop-blur-md shadow-lg">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className="flex items-center w-full px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-colors duration-200"
-                >
-                  <Icon size={20} className="mr-3" />
-                  {item.name}
-                </button>
-              );
-            })}
-          </div>
+      {open && (
+        <div
+          className="md:hidden"
+          style={{
+            position: 'absolute', top: 60, left: 0, right: 0,
+            background: 'color-mix(in srgb, var(--bg-primary) 96%, transparent)',
+            backdropFilter: 'blur(16px)', borderBottom: '1px solid var(--border-soft)',
+            padding: 12, display: 'flex', flexDirection: 'column', gap: 4,
+          }}
+        >
+          {navigation.concat({ name: 'Contact', href: '#contact' }).map((n) => (
+            <button
+              key={n.name}
+              onClick={() => go(n.href)}
+              style={{
+                textAlign: 'left', padding: '10px 14px', background: 'transparent',
+                border: 'none', color: 'var(--text-primary)', cursor: 'pointer',
+                fontSize: 13, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase',
+                fontFamily: "'DM Sans', sans-serif",
+              }}
+            >
+              {n.name}
+            </button>
+          ))}
         </div>
       )}
     </header>

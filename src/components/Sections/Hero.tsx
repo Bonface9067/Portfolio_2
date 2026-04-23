@@ -1,112 +1,209 @@
-import React from 'react';
-import { ArrowDown, MapPin, Globe, Download } from 'lucide-react';
-// Import your professional image
-import ProfessionalImage from '../../assets/images/PROFFESSIONAL.jpg'; // Update with your actual image path
+import React, { useEffect, useState } from 'react';
+import ProfessionalImage from '../../assets/images/PROFFESSIONAL.jpg';
+import Globe from './Globe';
+import { contactInfo } from '../../lib/contact';
+
+const tags = [
+  'Geo-Agentic AI Systems',
+  'Earth Intelligence',
+  'Climate Research',
+  'Quantum Geospatial',
+  'Blockchain for Earth Data',
+];
 
 const Hero: React.FC = () => {
-  const scrollToNext = () => {
-    const aboutSection = document.querySelector('#about');
-    if (aboutSection) {
-      aboutSection.scrollIntoView({ behavior: 'smooth' });
-    }
+  const [visible, setVisible] = useState(false);
+  const [tagIdx, setTagIdx] = useState(0);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 300);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const iv = setInterval(() => setTagIdx((i) => (i + 1) % tags.length), 3200);
+    return () => clearInterval(iv);
+  }, []);
+
+  const scroll = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) window.scrollTo({ top: el.offsetTop - 60, behavior: 'smooth' });
   };
 
   return (
-    <section 
-      id="home" 
-      className="min-h-screen flex items-center justify-center relative overflow-hidden"
+    <section
+      id="home"
+      style={{
+        position: 'relative', minHeight: '100vh', display: 'flex',
+        alignItems: 'center', overflow: 'hidden', background: 'var(--bg-primary)',
+      }}
     >
-      {/* Earth Observation Background */}
-      <div className="absolute inset-0">
-        {/* Gradient overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/85 to-teal-800/90 z-10"></div>
-        
-        {/* Earth observation satellite imagery background */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: `url('https://images.pexels.com/photos/87651/earth-blue-planet-globe-planet-87651.jpeg?auto=compress&cs=tinysrgb&w=1920')`
-          }}
-        ></div>
-        
-        {/* Animated satellite data overlay pattern */}
-        <div className="absolute inset-0 opacity-20 z-5">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,_rgba(120,119,198,0.3),_transparent_50%),radial-gradient(circle_at_80%_20%,_rgba(255,119,198,0.3),_transparent_50%),radial-gradient(circle_at_40%_40%,_rgba(120,219,255,0.3),_transparent_50%)]"></div>
-        </div>
+      <Globe style={{ opacity: 0.55, zIndex: 0 }} />
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute', inset: 0, opacity: 0.5, pointerEvents: 'none',
+          backgroundImage:
+            'linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px)',
+          backgroundSize: '64px 64px',
+          maskImage: 'radial-gradient(ellipse at 70% 50%, black 0%, transparent 70%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 70% 50%, black 0%, transparent 70%)',
+        }}
+      />
+      <div
+        aria-hidden
+        style={{
+          position: 'absolute', right: '-10%', top: '15%', width: 600, height: 600,
+          background: 'radial-gradient(circle, var(--accent-soft), transparent 60%)',
+          pointerEvents: 'none',
+        }}
+      />
 
-        {/* Floating data points animation */}
-        <div className="absolute inset-0 z-5">
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-          <div className="absolute top-1/3 right-1/3 w-1 h-1 bg-teal-400 rounded-full animate-ping"></div>
-          <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
-          <div className="absolute top-2/3 right-1/4 w-1 h-1 bg-blue-300 rounded-full animate-ping"></div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-        <div className="text-center">
-          <div className="mb-8">
-            <div className="w-40 h-40 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-400 to-teal-400 p-1">
-              <div className="w-full h-full rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center overflow-hidden border-2 border-white/20">
-                {/* Replaced "BO" with your professional image */}
-                <img 
-                  src={ProfessionalImage} 
-                  alt="Bonface Odhiambo" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight text-white">
-            <span className="block">Bonface Odhiambo</span>
-            <span className="block text-3xl md:text-4xl text-blue-200 mt-2">
-              Spatial Applications & Research Expert
-            </span>
-          </h1>
-
-          <p className="text-xl md:text-2xl mb-8 max-w-4xl mx-auto text-gray-200 leading-relaxed">
-            Leveraging geospatial technologies and Earth observation data to address complex 
-            environmental and socio-economic challenges.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <div className="flex items-center text-blue-200">
-              <MapPin size={20} className="mr-2" />
-              <span>Nairobi, Kenya</span>
-            </div>
-            <div className="flex items-center text-blue-200">
-              <Globe size={20} className="mr-2" />
-              <span>2+ Years Experience</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-teal-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
-            >
-              Get In Touch
-            </button>
-            <a
-              href="https://linkedin.com/in/bonface-odhiambo-17245a1ab"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-3 bg-white/10 backdrop-blur-sm text-white rounded-lg font-semibold hover:bg-white/20 transition-all duration-300 transform hover:scale-105 border border-white/20 flex items-center"
-            >
-              <Download size={20} className="mr-2" />
-              View LinkedIn
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <button
-        onClick={scrollToNext}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/80 hover:text-white transition-colors duration-300 animate-bounce z-20"
+      <div
+        style={{
+          position: 'relative', zIndex: 2, maxWidth: 720,
+          padding: '100px clamp(20px, 5vw, 48px) 60px',
+          opacity: visible ? 1 : 0,
+          transform: visible ? 'translateY(0)' : 'translateY(24px)',
+          transition: 'opacity 1s ease, transform 1s ease',
+        }}
       >
-        <ArrowDown size={32} />
-      </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
+          <div style={{
+            width: 7, height: 7, borderRadius: '50%', background: 'var(--accent)',
+            boxShadow: '0 0 10px var(--accent-glow)', animation: 'pulse 2s ease-in-out infinite',
+          }} />
+          <span style={{
+            fontSize: 11, letterSpacing: '0.22em', textTransform: 'uppercase',
+            color: 'var(--accent)', fontWeight: 500,
+          }}>Nairobi, Kenya</span>
+          <div style={{ height: 1, width: 80, background: 'var(--accent-border)' }} />
+          <span style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.12em' }}>
+            Geo-AI · Climate · Earth Systems
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 18, marginBottom: 28 }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: '50%',
+            background: 'linear-gradient(135deg, var(--accent), #3b82f6)', padding: 2, flexShrink: 0,
+          }}>
+            <div style={{
+              width: '100%', height: '100%', borderRadius: '50%',
+              overflow: 'hidden', border: '2px solid var(--border-soft)', background: 'var(--bg-primary)',
+            }}>
+              <img src={ProfessionalImage} alt="Bonface Odhiambo"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', letterSpacing: '0.12em', marginBottom: 3 }}>
+              BSc GEOINFORMATICS
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--text-strong)', fontWeight: 500 }}>
+              LocateIT Kenya Limited · Nairobi
+            </div>
+          </div>
+        </div>
+
+        <h1 style={{
+          fontFamily: "'Syne', sans-serif", fontWeight: 800,
+          fontSize: 'clamp(42px, 6vw, 76px)', lineHeight: 1.0,
+          letterSpacing: '-0.03em', color: 'var(--text-primary)', margin: '0 0 8px',
+        }}>
+          Bonface<br />
+          <span style={{
+            background: 'linear-gradient(90deg, var(--accent) 0%, #4ade80 60%, #3b82f6 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>Odhiambo</span>
+        </h1>
+
+        <div style={{
+          fontSize: 'clamp(14px, 1.8vw, 19px)', color: 'var(--text-secondary)',
+          fontWeight: 400, marginBottom: 24,
+        }}>
+          Spatial Applications &amp; Research Expert
+        </div>
+
+        <div style={{
+          height: 30, overflow: 'hidden', marginBottom: 28,
+          borderLeft: '2px solid var(--accent-border)', paddingLeft: 14,
+        }}>
+          <div style={{ fontSize: 15, color: 'var(--accent)', fontWeight: 500, letterSpacing: '0.04em' }}>
+            {tags[tagIdx]}
+          </div>
+        </div>
+
+        <p style={{
+          fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.7,
+          maxWidth: 540, marginBottom: 36,
+        }}>
+          Pioneering the fusion of{' '}
+          <strong style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Geo-Agentic AI</strong>,
+          quantum computing, and blockchain to decode Earth&apos;s most complex systems — from urban flood
+          response in Kenyan cities to desert locust outbreak prediction across the Horn of Africa.
+        </p>
+
+        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginBottom: 40 }}>
+          <button
+            onClick={() => scroll('projects')}
+            style={{
+              padding: '13px 28px', borderRadius: 6,
+              background: 'linear-gradient(135deg, var(--accent), #3b82f6)',
+              color: '#030812', fontWeight: 700, fontSize: 13,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+              border: 'none', cursor: 'pointer',
+              boxShadow: '0 0 24px var(--accent-glow)',
+            }}>Explore Work</button>
+          <a href={contactInfo.linkedinUrl} target="_blank" rel="noopener noreferrer"
+            style={{
+              padding: '13px 28px', borderRadius: 6,
+              background: 'var(--card-bg)', color: 'var(--text-primary)',
+              fontWeight: 600, fontSize: 13, letterSpacing: '0.1em', textTransform: 'uppercase',
+              border: '1px solid var(--border-soft)', textDecoration: 'none',
+            }}>LinkedIn</a>
+          <button
+            onClick={() => scroll('about')}
+            style={{
+              padding: '13px 28px', borderRadius: 6, background: 'transparent',
+              color: 'var(--text-secondary)', fontWeight: 600, fontSize: 13,
+              letterSpacing: '0.1em', textTransform: 'uppercase',
+              border: '1px solid var(--accent-border)', cursor: 'pointer',
+            }}>About Me</button>
+        </div>
+
+        <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
+          {[
+            { val: '2+', label: 'Years Experience' },
+            { val: '10+', label: 'Projects Delivered' },
+            { val: '4', label: 'Countries Served' },
+          ].map((s) => (
+            <div key={s.label}>
+              <div style={{
+                fontSize: 28, fontWeight: 800, color: 'var(--accent)',
+                fontFamily: "'Syne', sans-serif", lineHeight: 1,
+              }}>{s.val}</div>
+              <div style={{
+                fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.1em',
+                marginTop: 3, textTransform: 'uppercase',
+              }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{
+        position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)',
+        zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+        opacity: 0.6,
+      }}>
+        <div style={{ fontSize: 10, letterSpacing: '0.2em', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Scroll</div>
+        <div style={{
+          width: 1, height: 40,
+          background: 'linear-gradient(to bottom, var(--accent), transparent)',
+          animation: 'scrollPulse 2s ease-in-out infinite',
+        }} />
+      </div>
     </section>
   );
 };
