@@ -174,7 +174,7 @@ const Hero: React.FC = () => {
 
         <div style={{ display: 'flex', gap: 32, flexWrap: 'wrap' }}>
           {[
-            { val: '2+', label: 'Years Experience' },
+            { val: '3+', label: 'Years Experience' },
             { val: '10+', label: 'Projects Delivered' },
             { val: '4', label: 'Countries Served' },
           ].map((s) => (
